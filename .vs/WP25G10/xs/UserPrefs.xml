@@ -1,0 +1,33 @@
+﻿<Properties StartupConfiguration="{3A84E80C-C1AC-4AFF-B15F-D8E02CC955AB}|Default">
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.Workbench ActiveDocument="WP25G10/Properties/launchSettings.json">
+    <Files>
+      <File FileName="WP25G10/Program.cs" Line="44" Column="1" />
+      <File FileName="WP25G10/Properties/launchSettings.json" Line="6" Column="47" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="WP25G10" expanded="True">
+            <Node name="WP25G10" selected="True">
+              <Node name="Dependencies" expanded="True" />
+              <Node name="Controllers" expanded="True" />
+              <Node name="Data" expanded="True" />
+              <Node name="Models" expanded="True" />
+              <Node name="Properties" expanded="True" />
+              <Node name="Views" expanded="True">
+                <Node name="Shared" expanded="True" />
+              </Node>
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MultiItemStartupConfigurations />
+  <MonoDevelop.Ide.ItemProperties.WP25G10 PreferredExecutionTarget="/Applications/Google Chrome.app" />
+</Properties>

@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="../build/WP25G10.props" />
+</Project>
