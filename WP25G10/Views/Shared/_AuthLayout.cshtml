@@ -1,0 +1,37 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewData["Title"] - Airport Operations Manager</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body class="bg-light">
+    <div class="d-flex align-items-center justify-content-center" style="min-height: 100vh;">
+        <div class="auth-card shadow-sm bg-white rounded-3 p-4 p-md-5" style="min-width: 320px; max-width: 420px;">
+            <div class="d-flex align-items-center mb-4">
+                <div class="rounded-circle bg-light d-flex align-items-center justify-content-center me-2"
+                     style="width: 40px; height: 40px;">
+                    <i class="bi bi-airplane-fill text-primary fs-5"></i>
+                </div>
+                <div>
+                    <div class="fw-semibold">Airport Operations Manager</div>
+                    <div class="small text-muted">Sign in to manage flights and operations</div>
+                </div>
+            </div>
+
+            @RenderBody()
+        </div>
+    </div>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>
