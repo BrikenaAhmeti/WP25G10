@@ -1,0 +1,38 @@
+[
+  {
+    "ContainingType": "WP25G10.Controllers.Api.AirlinesController",
+    "Method": "Get",
+    "RelativePath": "api/Airlines",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WP25G10.Controllers.Api.FlightsController",
+    "Method": "Get",
+    "RelativePath": "api/Flights",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WP25G10.Controllers.Api.FlightsController",
+    "Method": "Get",
+    "RelativePath": "api/Flights/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  }
+]
