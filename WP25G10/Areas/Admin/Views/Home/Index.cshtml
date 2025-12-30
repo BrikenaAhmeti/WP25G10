@@ -1,0 +1,158 @@
+﻿@model WP25G10.Models.ViewModels.AdminDashboardViewModel
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<h1 class="h3 mb-4">Dashboard</h1>
+
+<div class="row g-3 mb-4">
+    @* Airlines *@
+    <div class="col-12 col-sm-6 col-lg-3">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <span class="text-muted small">Airlines</span>
+                    <i class="bi bi-building text-primary fs-4"></i>
+                </div>
+                <h3 class="mb-0">@Model.TotalAirlines</h3>
+                <div class="small text-success mt-1">
+                    @Model.ActiveAirlines active
+                </div>
+                @if (User.IsInRole("Admin"))
+                {
+                    <a asp-area="Admin" asp-controller="Airlines" asp-action="Index"
+                       class="small d-inline-block mt-2 text-decoration-none">
+                        Manage airlines →
+                    </a>
+                }
+            </div>
+        </div>
+    </div>
+
+    @* Gates *@
+    <div class="col-12 col-sm-6 col-lg-3">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <span class="text-muted small">Gates</span>
+                    <i class="bi bi-door-open text-primary fs-4"></i>
+                </div>
+                <h3 class="mb-0">@Model.TotalGates</h3>
+                <div class="small text-success mt-1">
+                    @Model.ActiveOpenGates open & active
+                </div>
+                @if (User.IsInRole("Admin"))
+                {
+                    <a asp-area="Admin" asp-controller="Gates" asp-action="Index"
+                       class="small d-inline-block mt-2 text-decoration-none">
+                        Manage gates →
+                    </a>
+                }
+            </div>
+        </div>
+    </div>
+
+    @* Check-in Desks *@
+    <div class="col-12 col-sm-6 col-lg-3">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <span class="text-muted small">Check-in Desks</span>
+                    <i class="bi bi-grid-3x3-gap text-primary fs-4"></i>
+                </div>
+                <h3 class="mb-0">@Model.TotalCheckInDesks</h3>
+                <div class="small text-success mt-1">
+                    @Model.ActiveCheckInDesks active
+                </div>
+                @if (User.IsInRole("Admin"))
+                {
+                    <a asp-area="Admin" asp-controller="CheckInDesks" asp-action="Index"
+                       class="small d-inline-block mt-2 text-decoration-none">
+                        Manage desks →
+                    </a>
+                }
+            </div>
+        </div>
+    </div>
+
+    @* Flights *@
+    <div class="col-12 col-sm-6 col-lg-3">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <span class="text-muted small">Flights</span>
+                    <i class="bi bi-airplane-engines text-primary fs-4"></i>
+                </div>
+                <h3 class="mb-0">@Model.TotalFlights</h3>
+                <div class="small text-success mt-1">
+                    @Model.ActiveFlights active · @Model.FlightsToday today
+                </div>
+                <a asp-area="Admin" asp-controller="Flights" asp-action="Index"
+                   class="small d-inline-block mt-2 text-decoration-none">
+                    Manage flights →
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* Latest flights table *@
+<div class="card shadow-sm border-0">
+    <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
+        <div>
+            <h2 class="h5 mb-0">Upcoming flights</h2>
+            <div class="small text-muted">Next few active departures</div>
+        </div>
+        <a asp-area="Admin" asp-controller="Flights" asp-action="Index"
+           class="btn btn-sm btn-outline-primary">
+            View all flights
+        </a>
+    </div>
+    <div class="card-body p-0">
+        @if (Model.LatestFlights.Any())
+        {
+            <div class="table-responsive">
+                <table class="table mb-0 align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Flight</th>
+                            <th>Airline</th>
+                            <th>Destination</th>
+                            <th>Departure</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var f in Model.LatestFlights)
+                        {
+                            <tr>
+                                <td>@f.FlightNumber</td>
+                                <td>@f.AirlineName</td>
+                                <td>@f.DestinationAirport</td>
+                                <td>@f.DepartureTime.ToString("dd MMM HH:mm")</td>
+                                <td>
+                                    <span class="badge bg-secondary">@f.Status</span>
+                                </td>
+                                <td class="text-end">
+                                    <a asp-area="Admin" asp-controller="Flights" asp-action="Edit"
+                                       asp-route-id="@f.Id"
+                                       class="btn btn-sm btn-outline-secondary">
+                                        Edit
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="p-3 text-muted small">
+                No upcoming active flights yet.
+            </div>
+        }
+    </div>
+</div>

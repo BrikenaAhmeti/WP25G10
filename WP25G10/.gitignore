@@ -1,0 +1,88 @@
+############################
+# OS / Editor junk
+############################
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# VS / Rider
+.vs/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.iml
+*.userprefs
+
+############################
+# .NET build / publish
+############################
+bin/
+obj/
+out/
+Debug/
+Release/
+*.exe
+*.dll
+*.pdb
+*.cache
+*.log
+*.tmp
+
+# Publish output
+/wwwroot/dist/
+/publish/
+/artifacts/
+
+############################
+# Resharper / Rider
+############################
+_ReSharper*/
+/*.ReSharper*/
+*.DotSettings.user
+
+############################
+# NuGet
+############################
+*.nupkg
+*.snupkg
+packages/
+project.lock.json
+nuget.config
+
+############################
+# npm / front-end (if you add it later)
+############################
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-lock.yaml
+
+############################
+# EF Core tools
+############################
+# (Keep Migrations folder in git for your coursework,
+# so we DO NOT ignore it here.)
+
+############################
+# Secrets / local config
+############################
+
+# Local-only appsettings (put real passwords here, not in main appsettings.json)
+appsettings.*.Local.json
+appsettings.*.Secrets.json
+
+# Uncomment this if you decide to keep Development settings private too
+# appsettings.Development.json
+
+############################
+# Rider solution-wide caches
+############################
+.idea/.idea.*
