@@ -36,10 +36,12 @@
             <div class="px-3 py-2 border-bottom small text-white-50">
                 @if (SignInManager.IsSignedIn(User))
                 {
-                    <div class="d-flex align-items-center text-black">
+                    <a asp-area="Identity"
+                       asp-page="/Account/Manage/Index"
+                       class="d-flex align-items-center text-black text-decoration-none">
                         <i class="bi bi-person-circle me-2"></i>
                         <span>@User.Identity!.Name</span>
-                    </div>
+                    </a>
                     <div class="mt-1 text-black">
                         @if (User.IsInRole("Admin"))
                         {
