@@ -1,18 +1,67 @@
-html {
-  font-size: 14px;
-}
-
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-html {
-  position: relative;
-  min-height: 100%;
-}
-
 body {
-  margin-bottom: 60px;
+    background-color: #f5f7fb;
+}
+
+.navbar-brand {
+    font-weight: 600;
+}
+
+#sidebar {
+    min-width: 230px;
+    max-width: 230px;
+}
+
+@media (max-width: 991.98px) {
+    #sidebar {
+        position: fixed;
+        z-index: 1030;
+        height: 100vh;
+        width: 230px;
+        transform: translateX(-100%);
+        transition: transform 0.2s ease-in-out;
+    }
+
+        #sidebar.show {
+            transform: translateX(0);
+        }
+}
+.role-badge-admin {
+    background-color: #0d6efd;
+    color: #ffffff;
+    font-size: 0.75rem;
+    padding-inline: 0.6rem;
+    padding-block: 0.2rem;
+}
+
+.role-badge-staff {
+    background-color: #6f42c1;
+    color: #ffffff;
+    font-size: 0.75rem;
+    padding-inline: 0.6rem;
+    padding-block: 0.2rem;
+}
+
+/* Make the whole page use full height */
+html,
+body {
+    height: 100%;
+}
+
+.admin-body {
+    min-height: 100vh;
+    background-color: #f4f5fb;
+}
+
+.admin-wrapper {
+    min-height: 100vh;
+}
+
+.admin-content {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.admin-content main {
+    flex: 1 0 auto;
 }
