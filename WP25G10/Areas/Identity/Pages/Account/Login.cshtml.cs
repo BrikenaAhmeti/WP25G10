@@ -122,16 +122,14 @@ namespace WP25G10.Areas.Identity.Pages.Account
             {
                 _logger.LogInformation("User logged in.");
 
-                // Find the user so we can check roles
                 var user = await _userManager.FindByEmailAsync(Input.Email);
 
                 if (user != null)
                 {
-                    // If Admin or Staff -> go to Admin dashboard
                     if (await _userManager.IsInRoleAsync(user, "Admin") ||
                         await _userManager.IsInRoleAsync(user, "Staff"))
                     {
-                        return LocalRedirect("~/Admin"); // /Admin/Home/Index
+                        return LocalRedirect("~/Admin");
                     }
                 }
 
