@@ -95,6 +95,13 @@
                                 Check-in Desks
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a asp-area="Admin" asp-controller="Staff" asp-action="Index"
+                               class="nav-link admin-nav-link @(controller == "Staff" ? "active" : "")">
+                                <i class="bi bi-people-fill me-2"></i>
+                                Staff
+                            </a>
+                        </li>
                     }
 
                     <li class="nav-item mt-3 px-3 text-uppercase small text-black-50">
