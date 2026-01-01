@@ -1,0 +1,32 @@
+﻿@model WP25G10.Models.ViewModels.FlightFormViewModel
+
+@{
+    ViewData["Title"] = "Edit Flight";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h1 class="h4 mb-0">Edit Flight</h1>
+        <div class="text-muted small">Update flight details.</div>
+    </div>
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left"></i> Back to list
+    </a>
+</div>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="Id" />
+
+    <partial name="_FlightForm" model="Model" />
+
+    <button type="submit" class="btn btn-primary">
+        <i class="bi bi-check-lg"></i> Save changes
+    </button>
+    <a asp-action="Index" class="btn btn-secondary ms-2">
+        Cancel
+    </a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

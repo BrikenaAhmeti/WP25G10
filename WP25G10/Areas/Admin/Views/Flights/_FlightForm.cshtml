@@ -1,0 +1,89 @@
+﻿@model WP25G10.Models.ViewModels.FlightFormViewModel
+@using WP25G10.Models
+
+<div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="mb-3">
+            <label asp-for="FlightNumber" class="form-label"></label>
+            <input asp-for="FlightNumber" class="form-control" />
+            <span asp-validation-for="FlightNumber" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="mb-3">
+            <label class="form-label">Airline</label>
+            <select asp-for="AirlineId" asp-items="Model.Airlines" class="form-select"></select>
+            <span asp-validation-for="AirlineId" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="mb-3">
+            <label class="form-label">Gate</label>
+            <select asp-for="GateId" asp-items="Model.Gates" class="form-select"></select>
+            <span asp-validation-for="GateId" class="text-danger"></span>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="mb-3">
+            <label class="form-label">Check-in desk (optional)</label>
+            <select asp-for="CheckInDeskId" asp-items="Model.CheckInDesks" class="form-select">
+                <option value="">-- none --</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="mb-3">
+            <label asp-for="OriginAirport" class="form-label"></label>
+            <input asp-for="OriginAirport" class="form-control" />
+            <span asp-validation-for="OriginAirport" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="mb-3">
+            <label asp-for="DestinationAirport" class="form-label"></label>
+            <input asp-for="DestinationAirport" class="form-control" />
+            <span asp-validation-for="DestinationAirport" class="text-danger"></span>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="mb-3">
+            <label asp-for="DepartureTime" class="form-label">Departure</label>
+            <input asp-for="DepartureTime" type="datetime-local" class="form-control" />
+            <span asp-validation-for="DepartureTime" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="mb-3">
+            <label asp-for="ArrivalTime" class="form-label">Arrival</label>
+            <input asp-for="ArrivalTime" type="datetime-local" class="form-control" />
+            <span asp-validation-for="ArrivalTime" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="mb-3">
+            <label asp-for="Status" class="form-label"></label>
+            <select asp-for="Status" class="form-select" asp-items="Html.GetEnumSelectList<FlightStatus>()"></select>
+        </div>
+    </div>
+</div>
+
+<div class="mb-3">
+    <label asp-for="DelayMinutes" class="form-label">Delay (minutes)</label>
+    <input asp-for="DelayMinutes" class="form-control" />
+    <span class="form-text">If delayed, set minutes (e.g., 15, 30, 60).</span>
+    <span asp-validation-for="DelayMinutes" class="text-danger"></span>
+</div>

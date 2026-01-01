@@ -17,7 +17,7 @@ namespace WP25G10.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.33")
+                .HasAnnotation("ProductVersion", "6.0.35")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -273,7 +273,6 @@ namespace WP25G10.Data.Migrations
                         .HasColumnType("character varying(100)");
 
                     b.Property<string>("CreatedByUserId")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<bool>("IsActive")
@@ -340,6 +339,12 @@ namespace WP25G10.Data.Migrations
                     b.Property<int?>("CheckInDeskFrom")
                         .HasColumnType("integer");
 
+                    b.Property<int?>("CheckInDeskId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("CheckInDeskId1")
+                        .HasColumnType("integer");
+
                     b.Property<int?>("CheckInDeskTo")
                         .HasColumnType("integer");
 
@@ -349,6 +354,9 @@ namespace WP25G10.Data.Migrations
                     b.Property<string>("CreatedByUserId")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<int>("DelayMinutes")
+                        .HasColumnType("integer");
 
                     b.Property<DateTime>("DepartureTime")
                         .HasColumnType("timestamp with time zone");
@@ -379,7 +387,17 @@ namespace WP25G10.Data.Migrations
 
                     b.HasIndex("AirlineId");
 
+                    b.HasIndex("ArrivalTime");
+
+                    b.HasIndex("CheckInDeskId");
+
+                    b.HasIndex("CheckInDeskId1");
+
                     b.HasIndex("CreatedByUserId");
+
+                    b.HasIndex("DepartureTime");
+
+                    b.HasIndex("FlightNumber");
 
                     b.HasIndex("GateId");
 
@@ -474,9 +492,7 @@ namespace WP25G10.Data.Migrations
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "CreatedByUser")
                         .WithMany()
-                        .HasForeignKey("CreatedByUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CreatedByUserId");
 
                     b.Navigation("CreatedByUser");
                 });
@@ -500,6 +516,15 @@ namespace WP25G10.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("WP25G10.Models.CheckInDesk", "CheckInDesk")
+                        .WithMany()
+                        .HasForeignKey("CheckInDeskId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("WP25G10.Models.CheckInDesk", null)
+                        .WithMany("Flights")
+                        .HasForeignKey("CheckInDeskId1");
+
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "CreatedByUser")
                         .WithMany()
                         .HasForeignKey("CreatedByUserId")
@@ -513,6 +538,8 @@ namespace WP25G10.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Airline");
+
+                    b.Navigation("CheckInDesk");
 
                     b.Navigation("CreatedByUser");
 
@@ -531,6 +558,11 @@ namespace WP25G10.Data.Migrations
                 });
 
             modelBuilder.Entity("WP25G10.Models.Airline", b =>
+                {
+                    b.Navigation("Flights");
+                });
+
+            modelBuilder.Entity("WP25G10.Models.CheckInDesk", b =>
                 {
                     b.Navigation("Flights");
                 });

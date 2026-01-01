@@ -1,0 +1,63 @@
+﻿@model WP25G10.Models.Flight
+@using WP25G10.Models
+
+@{
+    ViewData["Title"] = "Flight Details";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h1 class="h4 mb-0">Flight Details</h1>
+        <div class="text-muted small">View flight information.</div>
+    </div>
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left"></i> Back to list
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <dl class="row mb-0">
+            <dt class="col-sm-3">Flight Number</dt>
+            <dd class="col-sm-9">@Model.FlightNumber</dd>
+
+            <dt class="col-sm-3">Airline</dt>
+            <dd class="col-sm-9">@Model.Airline?.Name (@Model.Airline?.Code)</dd>
+
+            <dt class="col-sm-3">Gate</dt>
+            <dd class="col-sm-9">@Model.Gate?.Terminal-@Model.Gate?.Code</dd>
+
+            <dt class="col-sm-3">Check-in desk</dt>
+            <dd class="col-sm-9">
+                @(Model.CheckInDesk != null ? $"{Model.CheckInDesk.Terminal} - Desk {Model.CheckInDesk.DeskNumber}" : "-")
+            </dd>
+
+            <dt class="col-sm-3">Origin</dt>
+            <dd class="col-sm-9">@Model.OriginAirport</dd>
+
+            <dt class="col-sm-3">Destination</dt>
+            <dd class="col-sm-9">@Model.DestinationAirport</dd>
+
+            <dt class="col-sm-3">Departure</dt>
+            <dd class="col-sm-9">@Model.DepartureTime.ToString("f")</dd>
+
+            <dt class="col-sm-3">Arrival</dt>
+            <dd class="col-sm-9">@Model.ArrivalTime.ToString("f")</dd>
+
+            <dt class="col-sm-3">Status</dt>
+            <dd class="col-sm-9">@Model.Status</dd>
+
+            <dt class="col-sm-3">Delay</dt>
+            <dd class="col-sm-9">@((Model.DelayMinutes > 0) ? $"{Model.DelayMinutes} min" : "-")</dd>
+
+            <dt class="col-sm-3">Created by</dt>
+            <dd class="col-sm-9">@Model.CreatedByUser?.UserName</dd>
+        </dl>
+    </div>
+</div>
+
+<div class="mt-3">
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-secondary">
+        <i class="bi bi-pencil"></i> Edit
+    </a>
+</div>

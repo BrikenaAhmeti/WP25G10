@@ -9,10 +9,11 @@ namespace WP25G10.Models
 
     public enum FlightStatus
     {
-        Scheduled,
-        Boarding,
-        Departed,
-        Delayed,
-        Cancelled
+        Scheduled = 0,
+        Boarding = 1,
+        Departed = 2,
+        Delayed = 3,
+        Cancelled = 4,
+        Arrived = 5
     }
 }

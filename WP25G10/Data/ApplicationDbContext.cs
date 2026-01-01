@@ -16,4 +16,20 @@ public class ApplicationDbContext : IdentityDbContext
     public DbSet<CheckInDesk> CheckInDesks { get; set; } = default!;
     public DbSet<Flight> Flights { get; set; } = default!;
     public DbSet<ActionLog> ActionLogs { get; set; } = default!;
+
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+        base.OnModelCreating(builder);
+
+        builder.Entity<Flight>()
+            .HasOne(f => f.CheckInDesk)
+            .WithMany()
+            .HasForeignKey(f => f.CheckInDeskId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.Entity<Flight>().HasIndex(f => f.FlightNumber);
+        builder.Entity<Flight>().HasIndex(f => f.DepartureTime);
+        builder.Entity<Flight>().HasIndex(f => f.ArrivalTime);
+    }
+
 }

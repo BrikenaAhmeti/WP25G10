@@ -21,5 +21,7 @@ namespace WP25G10.Models
 
         [ForeignKey(nameof(CreatedByUserId))]
         public IdentityUser? CreatedByUser { get; set; }
+
+        public List<Flight> Flights { get; set; } = new();
     }
 }

@@ -1,4 +1,4 @@
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Identity;
 
@@ -19,6 +19,9 @@ namespace WP25G10.Models
         public int GateId { get; set; }
         public Gate? Gate { get; set; }
 
+        public int? CheckInDeskId { get; set; }
+        public CheckInDesk? CheckInDesk { get; set; }
+
         [Required]
         public string OriginAirport { get; set; } = string.Empty;
 
@@ -34,6 +37,9 @@ namespace WP25G10.Models
         [Required]
         public FlightStatus Status { get; set; } = FlightStatus.Scheduled;
 
+        [Range(0, 24 * 60)]
+        public int DelayMinutes { get; set; } = 0;
+
         public bool IsActive { get; set; } = true;
 
         public string? CheckInTerminal { get; set; }
@@ -45,5 +51,11 @@ namespace WP25G10.Models
 
         [ForeignKey(nameof(CreatedByUserId))]
         public IdentityUser? CreatedByUser { get; set; }
+
+        [NotMapped]
+        public DateTime EffectiveDepartureTime => DepartureTime.AddMinutes(DelayMinutes);
+
+        [NotMapped]
+        public DateTime EffectiveArrivalTime => ArrivalTime.AddMinutes(DelayMinutes);
     }
 }

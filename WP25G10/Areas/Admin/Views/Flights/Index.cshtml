@@ -1,0 +1,278 @@
+﻿@model WP25G10.Models.ViewModels.FlightsIndexViewModel
+@using WP25G10.Models
+@using Microsoft.AspNetCore.Mvc.Rendering
+
+@{
+    ViewData["Title"] = "Flights";
+    var airlines = ViewBag.Airlines as List<SelectListItem> ?? new();
+    var gates = ViewBag.Gates as List<SelectListItem> ?? new();
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h1 class="h4 mb-0">Flights</h1>
+        <div class="text-muted small">Manage flights on the airport flight board.</div>
+    </div>
+
+    <a asp-action="Create" class="btn btn-primary btn-sm">
+        <i class="bi bi-plus-lg me-1"></i> Add Flight
+    </a>
+</div>
+
+<form method="get" class="row g-2 mb-3">
+    <div class="col-md-3">
+        <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-search"></i></span>
+            <input type="text"
+                   name="search"
+                   value="@Model.SearchTerm"
+                   class="form-control"
+                   placeholder="Search flight no / origin / destination..." />
+        </div>
+    </div>
+
+    <div class="col-md-2">
+        <select name="board" class="form-select">
+            @if (Model.Board == "arrivals")
+            {
+                <option value="departures">Departures</option>
+                <option value="arrivals" selected>Arrivals</option>
+            }
+            else
+            {
+                <option value="departures" selected>Departures</option>
+                <option value="arrivals">Arrivals</option>
+            }
+        </select>
+    </div>
+
+    <div class="col-md-2">
+        <select name="airlineId" class="form-select">
+            <option value="">All airlines</option>
+            @foreach (var a in airlines)
+            {
+                <option value="@a.Value" selected="@(Model.AirlineId?.ToString() == a.Value)">@a.Text</option>
+            }
+        </select>
+    </div>
+
+    <div class="col-md-2">
+        <select name="gateId" class="form-select">
+            <option value="">All gates</option>
+            @foreach (var g in gates)
+            {
+                <option value="@g.Value" selected="@(Model.GateId?.ToString() == g.Value)">@g.Text</option>
+            }
+        </select>
+    </div>
+
+    <div class="col-md-1">
+        <input type="text"
+               name="terminal"
+               value="@Model.Terminal"
+               class="form-control"
+               placeholder="T1" />
+    </div>
+
+    <div class="col-md-2">
+        <input type="date" name="date" class="form-control"
+               value="@(Model.Date.HasValue? Model.Date.Value.ToString("yyyy-MM-dd") : "")" />
+    </div>
+
+    <div class="col-md-2">
+        <select name="flightStatus" class="form-select">
+            <option value="">All status</option>
+            @foreach (var s in Enum.GetValues(typeof(FlightStatus)).Cast<FlightStatus>())
+            {
+                <option value="@s" selected="@(Model.FlightStatus?.ToString() == s.ToString())">@s</option>
+            }
+        </select>
+    </div>
+
+    <div class="col-md-2">
+        <select name="status" class="form-select">
+            @if (Model.StatusFilter == "active")
+            {
+                <option value="all">All statuses</option>
+                <option value="active" selected>Active only</option>
+                <option value="inactive">Inactive only</option>
+            }
+            else if (Model.StatusFilter == "inactive")
+            {
+                <option value="all">All statuses</option>
+                <option value="active">Active only</option>
+                <option value="inactive" selected>Inactive only</option>
+            }
+            else
+            {
+                <option value="all" selected>All statuses</option>
+                <option value="active">Active only</option>
+                <option value="inactive">Inactive only</option>
+            }
+        </select>
+    </div>
+
+    <div class="col-md-2 d-flex align-items-center">
+        <input class="form-check-input me-2" type="checkbox" name="delayedOnly" value="true"
+               checked="@(Model.DelayedOnly)" />
+        <label class="form-check-label">Delayed only</label>
+    </div>
+
+    <div class="col-md-3">
+        <button type="submit" class="btn btn-outline-primary">
+            Apply
+        </button>
+
+        <a asp-action="Index" class="btn btn-link btn-sm">
+            Reset
+        </a>
+    </div>
+</form>
+
+@if (!Model.Flights.Any())
+{
+    <div class="alert alert-info">
+        No flights found with the current filters. Try adjusting your search.
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Flight</th>
+                    <th>Airline</th>
+                    <th>@(Model.Board == "arrivals" ? "Arrival" : "Departure")</th>
+                    <th>Origin</th>
+                    <th>Destination</th>
+                    <th>Gate</th>
+                    <th>Check-in</th>
+                    <th>Status</th>
+                    <th>Delay</th>
+                    <th>Created by</th>
+                    <th style="width: 230px;"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var f in Model.Flights)
+                {
+                    <tr>
+                        <td>@f.FlightNumber</td>
+                        <td>@(f.Airline?.Name) (@(f.Airline?.Code))</td>
+                        <td>
+                            @(Model.Board == "arrivals" ? f.ArrivalTime.ToString("g") : f.DepartureTime.ToString("g"))
+                            @if (f.DelayMinutes > 0)
+                            {
+                                <div class="text-muted small">
+                                    Effective: @(Model.Board == "arrivals" ? f.EffectiveArrivalTime.ToString("g") : f.EffectiveDepartureTime.ToString("g"))
+                                </div>
+                            }
+                        </td>
+                        <td>@f.OriginAirport</td>
+                        <td>@f.DestinationAirport</td>
+                        <td>@(f.Gate?.Terminal)-@(f.Gate?.Code)</td>
+                        <td>@(f.CheckInDesk != null ? $"{f.CheckInDesk.Terminal} - Desk {f.CheckInDesk.DeskNumber}" : "-")</td>
+                        <td>
+                            @if (f.Status == FlightStatus.Delayed)
+                            {
+                                <span class="badge bg-warning text-dark">Delayed</span>
+                            }
+                            else if (f.Status == FlightStatus.Cancelled)
+                            {
+                                <span class="badge bg-danger">Cancelled</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">@f.Status</span>
+                            }
+                        </td>
+                        <td>
+                            @if (f.DelayMinutes > 0)
+                            {
+                                <span class="badge bg-warning text-dark">@f.DelayMinutes min</span>
+                            }
+                            else
+                            {
+                                <span class="text-muted">-</span>
+                            }
+                        </td>
+                        <td>@(f.CreatedByUser?.UserName ?? "-")</td>
+
+                        <td class="text-end">
+                            <a asp-action="Details" asp-route-id="@f.Id"
+                               class="btn btn-sm btn-outline-secondary me-1">
+                                <i class="bi bi-eye"></i> View
+                            </a>
+
+                            <a asp-action="Edit" asp-route-id="@f.Id"
+                               class="btn btn-sm btn-outline-secondary me-1">
+                                <i class="bi bi-pencil"></i> Edit
+                            </a>
+
+                            <button type="button"
+                                    class="btn btn-sm btn-outline-danger"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#deleteFlightModal"
+                                    data-id="@f.Id"
+                                    data-name="@f.FlightNumber">
+                                <i class="bi bi-trash"></i> Delete
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+<div class="modal fade" id="deleteFlightModal" tabindex="-1" aria-labelledby="deleteFlightModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form asp-action="Delete" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteFlightModalLabel">Delete flight</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="id" id="delete-flight-id" />
+                    <p>
+                        Are you sure you want to delete
+                        <strong id="delete-flight-name"></strong>?
+                    </p>
+                    <p class="mb-0 text-muted small">
+                        This will remove the flight from the system (soft delete).
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-secondary"
+                            data-bs-dismiss="modal">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash"></i> Delete
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var deleteModal = document.getElementById('deleteFlightModal');
+            if (!deleteModal) return;
+
+            deleteModal.addEventListener('show.bs.modal', function (event) {
+                var button = event.relatedTarget;
+                var id = button.getAttribute('data-id');
+                var name = button.getAttribute('data-name');
+
+                deleteModal.querySelector('#delete-flight-id').value = id;
+                deleteModal.querySelector('#delete-flight-name').textContent = name;
+            });
+        });
+    </script>
+}
