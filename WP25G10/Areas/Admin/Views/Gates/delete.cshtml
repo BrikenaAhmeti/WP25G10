@@ -1,0 +1,17 @@
+﻿@model WP25G10.Models.Gate
+
+@{
+    ViewData["Title"] = "Delete Gate";
+}
+
+<h2>Delete Gate</h2>
+
+<div class="alert alert-warning">
+    Are you sure you want to delete gate <strong>@Model.Code</strong> (Terminal: @Model.Terminal)?
+</div>
+
+<form asp-area="Admin" asp-controller="Gates" asp-action="Delete" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a asp-area="Admin" asp-controller="Gates" asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>
