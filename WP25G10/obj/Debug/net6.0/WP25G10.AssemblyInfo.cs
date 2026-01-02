@@ -16,7 +16,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("WP25G10")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f1c6db8ae4f6b2bef6eb4d707d7bbfaa9db390f2")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1d7eb81f8e95ce9b24ba43baab38b1bfd7f1037a")]
 [assembly: System.Reflection.AssemblyProductAttribute("WP25G10")]
 [assembly: System.Reflection.AssemblyTitleAttribute("WP25G10")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

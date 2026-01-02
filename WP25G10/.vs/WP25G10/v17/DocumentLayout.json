@@ -3,6 +3,10 @@
   "WorkspaceRootPath": "C:\\Users\\Brikena\\Desktop\\WP25G10\\WP25G10\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{9954F375-4E75-48DF-8EA0-50594BB52CF4}|WP25G10.csproj|c:\\users\\brikena\\desktop\\wp25g10\\wp25g10\\areas\\admin\\controllers\\flightscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9954F375-4E75-48DF-8EA0-50594BB52CF4}|WP25G10.csproj|solutionrelative:areas\\admin\\controllers\\flightscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{9954F375-4E75-48DF-8EA0-50594BB52CF4}|WP25G10.csproj|c:\\users\\brikena\\desktop\\wp25g10\\wp25g10\\areas\\admin\\views\\checkindesks\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{9954F375-4E75-48DF-8EA0-50594BB52CF4}|WP25G10.csproj|solutionrelative:areas\\admin\\views\\checkindesks\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
@@ -39,6 +43,19 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "FlightsController.cs",
+              "DocumentMoniker": "C:\\Users\\Brikena\\Desktop\\WP25G10\\WP25G10\\Areas\\Admin\\Controllers\\FlightsController.cs",
+              "RelativeDocumentMoniker": "Areas\\Admin\\Controllers\\FlightsController.cs",
+              "ToolTip": "C:\\Users\\Brikena\\Desktop\\WP25G10\\WP25G10\\Areas\\Admin\\Controllers\\FlightsController.cs",
+              "RelativeToolTip": "Areas\\Admin\\Controllers\\FlightsController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAjAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-02T11:30:45.301Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
               "Title": "Edit.cshtml",
               "DocumentMoniker": "C:\\Users\\Brikena\\Desktop\\WP25G10\\WP25G10\\Areas\\Admin\\Views\\CheckInDesks\\Edit.cshtml",
               "RelativeDocumentMoniker": "Areas\\Admin\\Views\\CheckInDesks\\Edit.cshtml",
@@ -51,7 +68,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "Create.cshtml",
               "DocumentMoniker": "C:\\Users\\Brikena\\Desktop\\WP25G10\\WP25G10\\Areas\\Admin\\Views\\CheckInDesks\\Create.cshtml",
               "RelativeDocumentMoniker": "Areas\\Admin\\Views\\CheckInDesks\\Create.cshtml",
@@ -64,7 +81,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "Index.cshtml",
               "DocumentMoniker": "C:\\Users\\Brikena\\Desktop\\WP25G10\\WP25G10\\Areas\\Admin\\Views\\CheckInDesks\\Index.cshtml",
               "RelativeDocumentMoniker": "Areas\\Admin\\Views\\CheckInDesks\\Index.cshtml",
@@ -77,7 +94,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 5,
               "Title": "CheckInDesksIndexViewModel.cs",
               "DocumentMoniker": "C:\\Users\\Brikena\\Desktop\\WP25G10\\WP25G10\\Models\\ViewModels\\CheckInDesksIndexViewModel.cs",
               "RelativeDocumentMoniker": "Models\\ViewModels\\CheckInDesksIndexViewModel.cs",
@@ -90,7 +107,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "CheckInDesksController.cs",
               "DocumentMoniker": "C:\\Users\\Brikena\\Desktop\\WP25G10\\WP25G10\\Areas\\Admin\\Controllers\\CheckInDesksController.cs",
               "RelativeDocumentMoniker": "Areas\\Admin\\Controllers\\CheckInDesksController.cs",
@@ -103,7 +120,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 6,
               "Title": "CheckInDesk.cs",
               "DocumentMoniker": "C:\\Users\\Brikena\\Desktop\\WP25G10\\WP25G10\\Models\\CheckInDesk.cs",
               "RelativeDocumentMoniker": "Models\\CheckInDesk.cs",

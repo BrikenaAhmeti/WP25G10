@@ -11,7 +11,7 @@ using WP25G10.Models.ViewModels;
 namespace WP25G10.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Staff")]
     public class FlightsController : Controller
     {
         private readonly ApplicationDbContext _context;
