@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace WP25G10.Models
 {
@@ -9,17 +10,17 @@ namespace WP25G10.Models
         public int Id { get; set; }
 
         [Required]
-        public string Code { get; set; } = string.Empty; // e.g. A1
+        public string Code { get; set; } = string.Empty;
 
         [Required]
-        public string Terminal { get; set; } = string.Empty; // e.g. T1
+        public string Terminal { get; set; } = string.Empty;
 
         [Required]
         public GateStatus Status { get; set; } = GateStatus.Open;
 
         public bool IsActive { get; set; } = true;
 
-        [Required]
+        [ValidateNever]
         public string CreatedByUserId { get; set; } = string.Empty;
 
         [ForeignKey(nameof(CreatedByUserId))]

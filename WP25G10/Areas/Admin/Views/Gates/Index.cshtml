@@ -1,0 +1,55 @@
+﻿@model IEnumerable<WP25G10.Models.Gate>
+
+@{
+    ViewData["Title"] = "Gates";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0">Gates</h2>
+    <a class="btn btn-primary"
+       asp-area="Admin" asp-controller="Gates" asp-action="Create">
+        + Create Gate
+    </a>
+</div>
+
+@if (Model == null || !Model.Any())
+{
+    <div class="alert alert-info">
+        No gates found. Create your first gate.
+    </div>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Terminal</th>
+                <th>Code</th>
+                <th>Status</th>
+                <th>Active</th>
+                <th style="width:220px;"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var g in Model)
+            {
+                <tr>
+                    <td>@g.Terminal</td>
+                    <td>@g.Code</td>
+                    <td>@g.Status</td>
+                    <td>@(g.IsActive ? "Yes" : "No")</td>
+                    <td>
+                        <a class="btn btn-sm btn-outline-secondary"
+                           asp-area="Admin" asp-controller="Gates" asp-action="Edit" asp-route-id="@g.Id">
+                            Edit
+                        </a>
+                        <a class="btn btn-sm btn-outline-danger"
+                           asp-area="Admin" asp-controller="Gates" asp-action="Delete" asp-route-id="@g.Id">
+                            Delete
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

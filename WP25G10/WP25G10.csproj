@@ -8,6 +8,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Areas\Admin\Views\Gates\NewFolder\**" />
+    <Compile Remove="Areas\Admin\Views\NewFolder1\**" />
+    <Content Remove="Areas\Admin\Views\Gates\NewFolder\**" />
+    <Content Remove="Areas\Admin\Views\NewFolder1\**" />
+    <EmbeddedResource Remove="Areas\Admin\Views\Gates\NewFolder\**" />
+    <EmbeddedResource Remove="Areas\Admin\Views\NewFolder1\**" />
+    <None Remove="Areas\Admin\Views\Gates\NewFolder\**" />
+    <None Remove="Areas\Admin\Views\NewFolder1\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="app.db" CopyToOutputDirectory="PreserveNewest" ExcludeFromSingleFile="true" />
   </ItemGroup>
 
