@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WP25G10.Data;
 using WP25G10.Models;
+using WP25G10.Models.ViewModels;
 
 namespace WP25G10.Areas.Admin.Controllers
 {
@@ -17,21 +18,48 @@ namespace WP25G10.Areas.Admin.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
 
-        public CheckInDesksController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
+        public CheckInDesksController(
+            ApplicationDbContext context,
+            UserManager<IdentityUser> userManager)
         {
             _context = context;
             _userManager = userManager;
         }
-        public async Task<IActionResult> Index(string? terminal, int page = 1, int pageSize = 10)
+
+        // GET: Admin/CheckInDesks
+        public async Task<IActionResult> Index(
+            string? search,
+            string status = "all",
+            int page = 1,
+            int pageSize = 10)
         {
             var query = _context.CheckInDesks.AsQueryable();
 
-            if (!string.IsNullOrWhiteSpace(terminal))
+            if (!string.IsNullOrWhiteSpace(search))
             {
-                query = query.Where(d => d.Terminal.Contains(terminal));
+                var s = search.Trim();
+                query = query.Where(d =>
+                    d.Terminal.Contains(s) ||
+                    d.DeskNumber.ToString().Contains(s));
             }
 
-            var totalItems = await query.CountAsync();
+            switch (status)
+            {
+                case "active":
+                    query = query.Where(d => d.IsActive);
+                    break;
+                case "inactive":
+                    query = query.Where(d => !d.IsActive);
+                    break;
+            }
+
+            var totalCount = await query.CountAsync();
+
+            if (page < 1) page = 1;
+            var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+            if (totalPages == 0) totalPages = 1;
+            if (page > totalPages) page = totalPages;
+
             var desks = await query
                 .OrderBy(d => d.Terminal)
                 .ThenBy(d => d.DeskNumber)
@@ -39,40 +67,50 @@ namespace WP25G10.Areas.Admin.Controllers
                 .Take(pageSize)
                 .ToListAsync();
 
-            ViewBag.TerminalFilter = terminal;
-            ViewBag.Page = page;
-            ViewBag.PageSize = pageSize;
-            ViewBag.TotalItems = totalItems;
-
-            return View(desks);
-        }
-        public async Task<IActionResult> Details(int id)
-        {
-            var desk = await _context.CheckInDesks
-                .FirstOrDefaultAsync(d => d.Id == id);
-
-            if (desk == null)
+            var vm = new CheckInDesksIndexViewModel
             {
-                return NotFound();
-            }
+                Desks = desks,
+                SearchTerm = search,
+                StatusFilter = status,
+                PageNumber = page,
+                TotalPages = totalPages
+            };
 
-            return View(desk);
+            return View(vm);
         }
+
+        // GET: Admin/CheckInDesks/Create
         public IActionResult Create()
         {
             return View();
         }
 
+        // POST: Admin/CheckInDesks/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CheckInDesk desk)
         {
+            // Normalize terminal
+            desk.Terminal = (desk.Terminal ?? string.Empty).Trim().ToUpperInvariant();
+
+            // Uniqueness: Terminal + DeskNumber
+            var exists = await _context.CheckInDesks
+                .AnyAsync(d => d.Terminal == desk.Terminal &&
+                               d.DeskNumber == desk.DeskNumber);
+
+            if (exists)
+            {
+                ModelState.AddModelError(string.Empty,
+                    "A desk with this terminal and number already exists.");
+            }
+
             if (!ModelState.IsValid)
             {
                 return View(desk);
             }
 
             desk.CreatedByUserId = _userManager.GetUserId(User)!;
+
             _context.CheckInDesks.Add(desk);
             await _context.SaveChangesAsync();
 
@@ -82,24 +120,35 @@ namespace WP25G10.Areas.Admin.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        // GET: Admin/CheckInDesks/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
             var desk = await _context.CheckInDesks.FindAsync(id);
-            if (desk == null)
-            {
-                return NotFound();
-            }
+            if (desk == null) return NotFound();
 
             return View(desk);
         }
 
+        // POST: Admin/CheckInDesks/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, CheckInDesk desk)
         {
-            if (id != desk.Id)
+            if (id != desk.Id) return NotFound();
+
+            // Normalize
+            desk.Terminal = (desk.Terminal ?? string.Empty).Trim().ToUpperInvariant();
+
+            // Uniqueness
+            var exists = await _context.CheckInDesks
+                .AnyAsync(d => d.Id != desk.Id &&
+                               d.Terminal == desk.Terminal &&
+                               d.DeskNumber == desk.DeskNumber);
+
+            if (exists)
             {
-                return NotFound();
+                ModelState.AddModelError(string.Empty,
+                    "A desk with this terminal and number already exists.");
             }
 
             if (!ModelState.IsValid)
@@ -107,9 +156,18 @@ namespace WP25G10.Areas.Admin.Controllers
                 return View(desk);
             }
 
+            // Preserve CreatedByUserId
+            var existing = await _context.CheckInDesks
+                .AsNoTracking()
+                .FirstOrDefaultAsync(d => d.Id == id);
+
+            if (existing == null) return NotFound();
+
+            desk.CreatedByUserId = existing.CreatedByUserId;
+
             try
             {
-                _context.Entry(desk).State = EntityState.Modified;
+                _context.Update(desk);
                 await _context.SaveChangesAsync();
 
                 await LogAsync("Edit", "CheckInDesk", desk.Id,
@@ -118,28 +176,14 @@ namespace WP25G10.Areas.Admin.Controllers
             catch (DbUpdateConcurrencyException)
             {
                 if (!await DeskExists(desk.Id))
-                {
                     return NotFound();
-                }
                 throw;
             }
 
             return RedirectToAction(nameof(Index));
         }
 
-        public async Task<IActionResult> Delete(int id)
-        {
-            var desk = await _context.CheckInDesks
-                .FirstOrDefaultAsync(d => d.Id == id);
-
-            if (desk == null)
-            {
-                return NotFound();
-            }
-
-            return View(desk);
-        }
-
+        // POST: Admin/CheckInDesks/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

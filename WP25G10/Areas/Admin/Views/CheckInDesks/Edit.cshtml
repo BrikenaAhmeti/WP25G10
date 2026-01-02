@@ -1,0 +1,38 @@
+﻿@model WP25G10.Models.CheckInDesk
+
+@{
+    ViewData["Title"] = "Edit check-in desk";
+}
+
+<h1 class="h4 mb-3">Edit check-in desk</h1>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="Id" />
+
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="mb-3">
+        <label asp-for="Terminal" class="form-label"></label>
+        <input asp-for="Terminal" class="form-control" />
+        <span class="form-text">Example: T1, T2, A, B...</span>
+        <span asp-validation-for="Terminal" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="DeskNumber" class="form-label"></label>
+        <input asp-for="DeskNumber" class="form-control" />
+        <span asp-validation-for="DeskNumber" class="text-danger"></span>
+    </div>
+
+    <div class="form-check mb-3">
+        <input class="form-check-input" asp-for="IsActive" />
+        <label class="form-check-label" asp-for="IsActive"></label>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save changes</button>
+    <a asp-action="Index" class="btn btn-secondary ms-2">Back to list</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

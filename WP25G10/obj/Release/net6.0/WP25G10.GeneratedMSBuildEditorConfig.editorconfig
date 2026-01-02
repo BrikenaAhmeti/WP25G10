@@ -32,6 +32,18 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcQWlybGluZXNcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/Brikena/Desktop/WP25G10/WP25G10/Areas/Admin/Views/CheckInDesks/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcQ2hlY2tJbkRlc2tzXENyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Brikena/Desktop/WP25G10/WP25G10/Areas/Admin/Views/CheckInDesks/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcQ2hlY2tJbkRlc2tzXEVkaXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Brikena/Desktop/WP25G10/WP25G10/Areas/Admin/Views/CheckInDesks/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcQ2hlY2tJbkRlc2tzXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/Brikena/Desktop/WP25G10/WP25G10/Areas/Admin/Views/Flights/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcRmxpZ2h0c1xDcmVhdGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 

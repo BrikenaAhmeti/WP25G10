@@ -1,0 +1,204 @@
+﻿@model WP25G10.Models.ViewModels.CheckInDesksIndexViewModel
+
+@{
+    ViewData["Title"] = "Check-in desks";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h1 class="h4 mb-0">Check-in desks</h1>
+        <div class="text-muted small">Manage terminals and desk numbers.</div>
+    </div>
+    <a asp-action="Create" class="btn btn-primary btn-sm">
+        <i class="bi bi-plus-lg me-1"></i> Add desk
+    </a>
+</div>
+
+<form method="get" class="row g-2 mb-3">
+    <div class="col-md-4">
+        <div class="input-group">
+            <span class="input-group-text">
+                <i class="bi bi-search"></i>
+            </span>
+            <input type="text"
+                   name="search"
+                   value="@Model.SearchTerm"
+                   class="form-control"
+                   placeholder="Search by terminal or desk number..." />
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <select name="status" class="form-select">
+            <option value="all" selected="@(Model.StatusFilter == "all" ? "selected" : null)">
+                All statuses
+            </option>
+            <option value="active" selected="@(Model.StatusFilter == "active" ? "selected" : null)">
+                Active only
+            </option>
+            <option value="inactive" selected="@(Model.StatusFilter == "inactive" ? "selected" : null)">
+                Inactive only
+            </option>
+        </select>
+    </div>
+
+    <div class="col-md-3">
+        <button type="submit" class="btn btn-outline-primary">
+            Apply
+        </button>
+        <a asp-action="Index" class="btn btn-link btn-sm">
+            Reset
+        </a>
+    </div>
+</form>
+
+@if (!Model.Desks.Any())
+{
+    <div class="alert alert-info">
+        No check-in desks found. Use <strong>Add desk</strong> to create one.
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Terminal</th>
+                    <th>Desk number</th>
+                    <th>Status</th>
+                    <th style="width: 200px;"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var d in Model.Desks)
+                {
+                    <tr>
+                        <td>@d.Terminal</td>
+                        <td>@d.DeskNumber</td>
+                        <td>
+                            @if (d.IsActive)
+                            {
+                                <span class="badge bg-success">Active</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">Inactive</span>
+                            }
+                        </td>
+                        <td class="text-end">
+                            <a asp-action="Edit" asp-route-id="@d.Id"
+                               class="btn btn-sm btn-outline-secondary me-1">
+                                <i class="bi bi-pencil"></i> Edit
+                            </a>
+
+                            <button type="button"
+                                    class="btn btn-sm btn-outline-danger"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#deleteDeskModal"
+                                    data-id="@d.Id"
+                                    data-terminal="@d.Terminal"
+                                    data-desk="@d.DeskNumber">
+                                <i class="bi bi-trash"></i> Delete
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    if (Model.TotalPages > 1)
+    {
+        <nav aria-label="Check-in desks pagination">
+            <ul class="pagination justify-content-end">
+                <li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
+                    <a class="page-link"
+                       asp-action="Index"
+                       asp-route-page="@(Model.PageNumber - 1)"
+                       asp-route-search="@Model.SearchTerm"
+                       asp-route-status="@Model.StatusFilter">
+                        Previous
+                    </a>
+                </li>
+
+                @for (var i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                        <a class="page-link"
+                           asp-action="Index"
+                           asp-route-page="@i"
+                           asp-route-search="@Model.SearchTerm"
+                           asp-route-status="@Model.StatusFilter">
+                            @i
+                        </a>
+                    </li>
+                }
+
+                <li class="page-item @(Model.HasNextPage ? "" : "disabled")">
+                    <a class="page-link"
+                       asp-action="Index"
+                       asp-route-page="@(Model.PageNumber + 1)"
+                       asp-route-search="@Model.SearchTerm"
+                       asp-route-status="@Model.StatusFilter">
+                        Next
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    }
+}
+
+<div class="modal fade" id="deleteDeskModal" tabindex="-1" aria-labelledby="deleteDeskModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form asp-action="Delete" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteDeskModalLabel">Delete check-in desk</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="id" id="delete-desk-id" />
+                    <p>
+                        Are you sure you want to delete desk
+                        <strong id="delete-desk-number"></strong>
+                        in terminal <strong id="delete-desk-terminal"></strong>?
+                    </p>
+                    <p class="mb-0 text-muted small">
+                        This will remove the desk from the system. Related flights may need to be updated manually.
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-secondary"
+                            data-bs-dismiss="modal">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash"></i> Delete
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var modal = document.getElementById('deleteDeskModal');
+            if (!modal) return;
+
+            modal.addEventListener('show.bs.modal', function (event) {
+                var button = event.relatedTarget;
+                var id = button.getAttribute('data-id');
+                var terminal = button.getAttribute('data-terminal');
+                var desk = button.getAttribute('data-desk');
+
+                modal.querySelector('#delete-desk-id').value = id;
+                modal.querySelector('#delete-desk-terminal').textContent = terminal;
+                modal.querySelector('#delete-desk-number').textContent = desk;
+            });
+        });
+    </script>
+}
