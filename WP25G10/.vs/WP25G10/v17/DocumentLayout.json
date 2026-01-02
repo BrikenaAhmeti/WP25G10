@@ -3,6 +3,26 @@
   "WorkspaceRootPath": "C:\\Users\\Brikena\\Desktop\\WP25G10\\WP25G10\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{9954F375-4E75-48DF-8EA0-50594BB52CF4}|WP25G10.csproj|c:\\users\\brikena\\desktop\\wp25g10\\wp25g10\\views\\shared\\_authlayout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{9954F375-4E75-48DF-8EA0-50594BB52CF4}|WP25G10.csproj|solutionrelative:views\\shared\\_authlayout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9954F375-4E75-48DF-8EA0-50594BB52CF4}|WP25G10.csproj|c:\\users\\brikena\\desktop\\wp25g10\\wp25g10\\areas\\identity\\pages\\account\\register.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{9954F375-4E75-48DF-8EA0-50594BB52CF4}|WP25G10.csproj|solutionrelative:areas\\identity\\pages\\account\\register.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9954F375-4E75-48DF-8EA0-50594BB52CF4}|WP25G10.csproj|c:\\users\\brikena\\desktop\\wp25g10\\wp25g10\\areas\\identity\\pages\\account\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{9954F375-4E75-48DF-8EA0-50594BB52CF4}|WP25G10.csproj|solutionrelative:areas\\identity\\pages\\account\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9954F375-4E75-48DF-8EA0-50594BB52CF4}|WP25G10.csproj|c:\\users\\brikena\\desktop\\wp25g10\\wp25g10\\areas\\admin\\views\\shared\\_adminlayout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{9954F375-4E75-48DF-8EA0-50594BB52CF4}|WP25G10.csproj|solutionrelative:areas\\admin\\views\\shared\\_adminlayout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9954F375-4E75-48DF-8EA0-50594BB52CF4}|WP25G10.csproj|c:\\users\\brikena\\desktop\\wp25g10\\wp25g10\\areas\\admin\\controllers\\checkindeskscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9954F375-4E75-48DF-8EA0-50594BB52CF4}|WP25G10.csproj|solutionrelative:areas\\admin\\controllers\\checkindeskscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{9954F375-4E75-48DF-8EA0-50594BB52CF4}|WP25G10.csproj|c:\\users\\brikena\\desktop\\wp25g10\\wp25g10\\areas\\admin\\controllers\\flightscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{9954F375-4E75-48DF-8EA0-50594BB52CF4}|WP25G10.csproj|solutionrelative:areas\\admin\\controllers\\flightscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -17,10 +37,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{9954F375-4E75-48DF-8EA0-50594BB52CF4}|WP25G10.csproj|c:\\users\\brikena\\desktop\\wp25g10\\wp25g10\\areas\\admin\\views\\checkindesks\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{9954F375-4E75-48DF-8EA0-50594BB52CF4}|WP25G10.csproj|solutionrelative:areas\\admin\\views\\checkindesks\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9954F375-4E75-48DF-8EA0-50594BB52CF4}|WP25G10.csproj|c:\\users\\brikena\\desktop\\wp25g10\\wp25g10\\areas\\admin\\controllers\\checkindeskscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9954F375-4E75-48DF-8EA0-50594BB52CF4}|WP25G10.csproj|solutionrelative:areas\\admin\\controllers\\checkindeskscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{9954F375-4E75-48DF-8EA0-50594BB52CF4}|WP25G10.csproj|c:\\users\\brikena\\desktop\\wp25g10\\wp25g10\\models\\viewmodels\\checkindesksindexviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -43,6 +59,58 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "_AuthLayout.cshtml",
+              "DocumentMoniker": "C:\\Users\\Brikena\\Desktop\\WP25G10\\WP25G10\\Views\\Shared\\_AuthLayout.cshtml",
+              "RelativeDocumentMoniker": "Views\\Shared\\_AuthLayout.cshtml",
+              "ToolTip": "C:\\Users\\Brikena\\Desktop\\WP25G10\\WP25G10\\Views\\Shared\\_AuthLayout.cshtml",
+              "RelativeToolTip": "Views\\Shared\\_AuthLayout.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAA2AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-01-02T11:51:47.252Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Register.cshtml",
+              "DocumentMoniker": "C:\\Users\\Brikena\\Desktop\\WP25G10\\WP25G10\\Areas\\Identity\\Pages\\Account\\Register.cshtml",
+              "RelativeDocumentMoniker": "Areas\\Identity\\Pages\\Account\\Register.cshtml",
+              "ToolTip": "C:\\Users\\Brikena\\Desktop\\WP25G10\\WP25G10\\Areas\\Identity\\Pages\\Account\\Register.cshtml",
+              "RelativeToolTip": "Areas\\Identity\\Pages\\Account\\Register.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAjAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-01-02T11:51:40.948Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Login.cshtml",
+              "DocumentMoniker": "C:\\Users\\Brikena\\Desktop\\WP25G10\\WP25G10\\Areas\\Identity\\Pages\\Account\\Login.cshtml",
+              "RelativeDocumentMoniker": "Areas\\Identity\\Pages\\Account\\Login.cshtml",
+              "ToolTip": "C:\\Users\\Brikena\\Desktop\\WP25G10\\WP25G10\\Areas\\Identity\\Pages\\Account\\Login.cshtml",
+              "RelativeToolTip": "Areas\\Identity\\Pages\\Account\\Login.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAjAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-01-02T11:51:34.129Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "_AdminLayout.cshtml",
+              "DocumentMoniker": "C:\\Users\\Brikena\\Desktop\\WP25G10\\WP25G10\\Areas\\Admin\\Views\\Shared\\_AdminLayout.cshtml",
+              "RelativeDocumentMoniker": "Areas\\Admin\\Views\\Shared\\_AdminLayout.cshtml",
+              "ToolTip": "C:\\Users\\Brikena\\Desktop\\WP25G10\\WP25G10\\Areas\\Admin\\Views\\Shared\\_AdminLayout.cshtml",
+              "RelativeToolTip": "Areas\\Admin\\Views\\Shared\\_AdminLayout.cshtml",
+              "ViewState": "AgIAALUAAAAAAAAAAAAnwMEAAABCAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-01-02T11:49:38.481Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
               "Title": "FlightsController.cs",
               "DocumentMoniker": "C:\\Users\\Brikena\\Desktop\\WP25G10\\WP25G10\\Areas\\Admin\\Controllers\\FlightsController.cs",
               "RelativeDocumentMoniker": "Areas\\Admin\\Controllers\\FlightsController.cs",
@@ -55,7 +123,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 6,
               "Title": "Edit.cshtml",
               "DocumentMoniker": "C:\\Users\\Brikena\\Desktop\\WP25G10\\WP25G10\\Areas\\Admin\\Views\\CheckInDesks\\Edit.cshtml",
               "RelativeDocumentMoniker": "Areas\\Admin\\Views\\CheckInDesks\\Edit.cshtml",
@@ -68,7 +136,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 7,
               "Title": "Create.cshtml",
               "DocumentMoniker": "C:\\Users\\Brikena\\Desktop\\WP25G10\\WP25G10\\Areas\\Admin\\Views\\CheckInDesks\\Create.cshtml",
               "RelativeDocumentMoniker": "Areas\\Admin\\Views\\CheckInDesks\\Create.cshtml",
@@ -81,7 +149,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 8,
               "Title": "Index.cshtml",
               "DocumentMoniker": "C:\\Users\\Brikena\\Desktop\\WP25G10\\WP25G10\\Areas\\Admin\\Views\\CheckInDesks\\Index.cshtml",
               "RelativeDocumentMoniker": "Areas\\Admin\\Views\\CheckInDesks\\Index.cshtml",
@@ -94,7 +162,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 9,
               "Title": "CheckInDesksIndexViewModel.cs",
               "DocumentMoniker": "C:\\Users\\Brikena\\Desktop\\WP25G10\\WP25G10\\Models\\ViewModels\\CheckInDesksIndexViewModel.cs",
               "RelativeDocumentMoniker": "Models\\ViewModels\\CheckInDesksIndexViewModel.cs",
@@ -113,14 +181,14 @@
               "RelativeDocumentMoniker": "Areas\\Admin\\Controllers\\CheckInDesksController.cs",
               "ToolTip": "C:\\Users\\Brikena\\Desktop\\WP25G10\\WP25G10\\Areas\\Admin\\Controllers\\CheckInDesksController.cs",
               "RelativeToolTip": "Areas\\Admin\\Controllers\\CheckInDesksController.cs",
-              "ViewState": "AgIAAB0AAAAAAAAAAAAiwCUAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAA8AAAAAAAAAAAAAABwAAAAiAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-01-02T10:04:56.425Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 10,
               "Title": "CheckInDesk.cs",
               "DocumentMoniker": "C:\\Users\\Brikena\\Desktop\\WP25G10\\WP25G10\\Models\\CheckInDesk.cs",
               "RelativeDocumentMoniker": "Models\\CheckInDesk.cs",
