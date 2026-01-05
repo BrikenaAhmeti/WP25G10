@@ -18,9 +18,7 @@ namespace WP25G10.Areas.Admin.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
 
-        public CheckInDesksController(
-            ApplicationDbContext context,
-            UserManager<IdentityUser> userManager)
+        public CheckInDesksController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
             _userManager = userManager;
@@ -93,6 +91,13 @@ namespace WP25G10.Areas.Admin.Controllers
             // Normalize terminal
             desk.Terminal = (desk.Terminal ?? string.Empty).Trim().ToUpperInvariant();
 
+            // ✅ Seto CreatedByUserId para validimit (se është [Required] dhe s’vjen nga forma)
+            desk.CreatedByUserId = _userManager.GetUserId(User)!;
+
+            // ✅ Hiqe nga ModelState sepse e plotësojmë në server
+            ModelState.Remove(nameof(CheckInDesk.CreatedByUserId));
+            ModelState.Remove(nameof(CheckInDesk.CreatedByUser));
+
             // Uniqueness: Terminal + DeskNumber
             var exists = await _context.CheckInDesks
                 .AnyAsync(d => d.Terminal == desk.Terminal &&
@@ -108,8 +113,6 @@ namespace WP25G10.Areas.Admin.Controllers
             {
                 return View(desk);
             }
-
-            desk.CreatedByUserId = _userManager.GetUserId(User)!;
 
             _context.CheckInDesks.Add(desk);
             await _context.SaveChangesAsync();
@@ -136,10 +139,8 @@ namespace WP25G10.Areas.Admin.Controllers
         {
             if (id != desk.Id) return NotFound();
 
-            // Normalize
             desk.Terminal = (desk.Terminal ?? string.Empty).Trim().ToUpperInvariant();
 
-            // Uniqueness
             var exists = await _context.CheckInDesks
                 .AnyAsync(d => d.Id != desk.Id &&
                                d.Terminal == desk.Terminal &&
@@ -156,7 +157,6 @@ namespace WP25G10.Areas.Admin.Controllers
                 return View(desk);
             }
 
-            // Preserve CreatedByUserId
             var existing = await _context.CheckInDesks
                 .AsNoTracking()
                 .FirstOrDefaultAsync(d => d.Id == id);
@@ -177,6 +177,7 @@ namespace WP25G10.Areas.Admin.Controllers
             {
                 if (!await DeskExists(desk.Id))
                     return NotFound();
+
                 throw;
             }
 
