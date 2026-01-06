@@ -28,10 +28,10 @@ namespace WP25G10.Models
         [Required]
         public string DestinationAirport { get; set; } = string.Empty;
 
-        [Required]
+        [Column(TypeName = "timestamp without time zone")]
         public DateTime DepartureTime { get; set; }
 
-        [Required]
+        [Column(TypeName = "timestamp without time zone")]
         public DateTime ArrivalTime { get; set; }
 
         [Required]

@@ -334,7 +334,7 @@ namespace WP25G10.Data.Migrations
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("ArrivalTime")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<int?>("CheckInDeskFrom")
                         .HasColumnType("integer");
@@ -359,7 +359,7 @@ namespace WP25G10.Data.Migrations
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("DepartureTime")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("DestinationAirport")
                         .IsRequired()

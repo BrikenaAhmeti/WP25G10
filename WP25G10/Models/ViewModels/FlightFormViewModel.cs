@@ -26,9 +26,11 @@ namespace WP25G10.Models.ViewModels
         public string DestinationAirport { get; set; } = string.Empty;
 
         [Required]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-ddTHH:mm}", ApplyFormatInEditMode = true)]
         public DateTime DepartureTime { get; set; }
 
         [Required]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-ddTHH:mm}", ApplyFormatInEditMode = true)]
         public DateTime ArrivalTime { get; set; }
 
         [Required]
