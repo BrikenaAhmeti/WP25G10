@@ -32,15 +32,57 @@ namespace WP25G10.Areas.Admin.Controllers
         }
 
         public async Task<IActionResult> Index(
-          string? search,
-          string status = "all",
-          string sort = "created_desc",
-          int page = 1,
-          int pageSize = 5)
+            string? search,
+            string status = "all",
+            string sort = "created_desc",
+            int page = 1,
+            int pageSize = 5,
+            bool reset = false)
+
         {
+            if (reset)
+            {
+                HttpContext.Session.Remove("Airlines_Search");
+                HttpContext.Session.Remove("Airlines_Status");
+                HttpContext.Session.Remove("Airlines_Sort");
+                HttpContext.Session.Remove("Airlines_Page");
+
+                search = null;
+                status = "all";
+                sort = "created_desc";
+                page = 1;
+            }
+            else
+            {
+                // restore nga session
+                var hasQuery =
+                Request.Query.ContainsKey("search") ||
+                Request.Query.ContainsKey("status") ||
+                Request.Query.ContainsKey("sort") ||
+                Request.Query.ContainsKey("page");
+
+                if (!hasQuery)
+                {
+                    search ??= HttpContext.Session.GetString("Airlines_Search");
+                    status = HttpContext.Session.GetString("Airlines_Status") ?? status;
+                    sort = HttpContext.Session.GetString("Airlines_Sort") ?? sort;
+
+                    var storedPage = HttpContext.Session.GetInt32("Airlines_Page");
+                    if (storedPage.HasValue && storedPage.Value > 0)
+                    {
+                        page = storedPage.Value;
+                    }
+                }
+            }
+
+            // ruaj filters ne session
+            HttpContext.Session.SetString("Airlines_Search", search ?? string.Empty);
+            HttpContext.Session.SetString("Airlines_Status", status ?? "all");
+            HttpContext.Session.SetString("Airlines_Sort", sort ?? "created_desc");
+            HttpContext.Session.SetInt32("Airlines_Page", page);
+
             var query = _context.Airlines.AsQueryable();
 
-            // search
             if (!string.IsNullOrWhiteSpace(search))
             {
                 var s = search.Trim().ToLower();
@@ -51,7 +93,6 @@ namespace WP25G10.Areas.Admin.Controllers
                     (a.Country != null && a.Country.ToLower().Contains(s)));
             }
 
-            // filter status
             switch (status)
             {
                 case "active":
@@ -62,15 +103,13 @@ namespace WP25G10.Areas.Admin.Controllers
                     break;
             }
 
-            // count after filters
             var totalCount = await query.CountAsync();
 
             if (page < 1) page = 1;
-            var totalPages = (int)System.Math.Ceiling(totalCount / (double)pageSize);
+            var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
             if (totalPages == 0) totalPages = 1;
             if (page > totalPages) page = totalPages;
 
-            // sort
             query = sort switch
             {
                 "name_asc" => query.OrderBy(a => a.Name),
@@ -79,7 +118,6 @@ namespace WP25G10.Areas.Admin.Controllers
                 "code_asc" => query.OrderBy(a => a.Code),
                 "code_desc" => query.OrderByDescending(a => a.Code),
 
-                // default
                 _ => query.OrderByDescending(a => a.Id)
             };
 

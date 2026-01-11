@@ -26,12 +26,51 @@ namespace WP25G10.Areas.Admin.Controllers
 
         // get main view endpoint - Admin/CheckInDesks
         public async Task<IActionResult> Index(
-           string? search,
-           string status = "all",
-           string sort = "created_desc",
-           int page = 1,
-           int pageSize = 10)
+            string? search,
+            string status = "all",
+            string sort = "created_desc",
+            int page = 1,
+            int pageSize = 10,
+            bool reset = false)
         {
+            if (reset)
+            {
+                HttpContext.Session.Remove("Desks_Search");
+                HttpContext.Session.Remove("Desks_Status");
+                HttpContext.Session.Remove("Desks_Sort");
+                HttpContext.Session.Remove("Desks_Page");
+
+                search = null;
+                status = "all";
+                sort = "created_desc";
+                page = 1;
+            }
+            else
+            {
+                var hasQuery =
+                    Request.Query.ContainsKey("search") ||
+                    Request.Query.ContainsKey("status") ||
+                    Request.Query.ContainsKey("sort") ||
+                    Request.Query.ContainsKey("page");
+
+                if (!hasQuery)
+                {
+                    search ??= HttpContext.Session.GetString("Desks_Search");
+                    status = HttpContext.Session.GetString("Desks_Status") ?? status;
+                    sort = HttpContext.Session.GetString("Desks_Sort") ?? sort;
+
+                    var storedPage = HttpContext.Session.GetInt32("Desks_Page");
+                    if (storedPage.HasValue && storedPage.Value > 0)
+                    {
+                        page = storedPage.Value;
+                    }
+                }
+            }
+            HttpContext.Session.SetString("Desks_Search", search ?? string.Empty);
+            HttpContext.Session.SetString("Desks_Status", status ?? "all");
+            HttpContext.Session.SetString("Desks_Sort", sort ?? "created_desc");
+            HttpContext.Session.SetInt32("Desks_Page", page);
+
             var query = _context.CheckInDesks.AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(search))

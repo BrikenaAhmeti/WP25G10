@@ -23,104 +23,162 @@ namespace WP25G10.Areas.Admin.Controllers
             _userManager = userManager;
         }
 
-        // GET: /Admin/Flights
-
-
-public async Task<IActionResult> Index(
-    string? search,
-    string? status,
-    string? board,
-    int? airlineId,
-    int? gateId,
-    string? terminal,
-    FlightStatus? flightStatus,
-    DateTime? date,
-    bool? delayedOnly
-)
-    {
-        board = string.IsNullOrWhiteSpace(board) ? "departures" : board.ToLower();
-        status = string.IsNullOrWhiteSpace(status) ? "all" : status.ToLower();
-
-        var q = _context.Flights
-            .Include(f => f.Airline)
-            .Include(f => f.Gate)
-            .Include(f => f.CheckInDesk)
-            .Include(f => f.CreatedByUser)
-            .AsQueryable();
-
-        // active/inactive filter (same style as Airlines)
-        if (status == "active") q = q.Where(f => f.IsActive);
-        else if (status == "inactive") q = q.Where(f => !f.IsActive);
-
-        // search filter (flight no / origin / destination)
-        if (!string.IsNullOrWhiteSpace(search))
+        // get endpoint -> /Admin/Flights
+        public async Task<IActionResult> Index(
+        string? search,
+        string? status,
+        string? board,
+        int? airlineId,
+        int? gateId,
+        string? terminal,
+        FlightStatus? flightStatus,
+        DateTime? date,
+        bool? delayedOnly)
         {
-            q = q.Where(f =>
-                f.FlightNumber.Contains(search) ||
-                f.OriginAirport.Contains(search) ||
-                f.DestinationAirport.Contains(search));
-        }
+            var hasQuery = Request.QueryString.HasValue;
 
-        if (airlineId.HasValue) q = q.Where(f => f.AirlineId == airlineId.Value);
-        if (gateId.HasValue) q = q.Where(f => f.GateId == gateId.Value);
+            if (!hasQuery)
+            {
+                search ??= HttpContext.Session.GetString("Flights_Search");
+                status ??= HttpContext.Session.GetString("Flights_Status");
+                board ??= HttpContext.Session.GetString("Flights_Board");
+                terminal ??= HttpContext.Session.GetString("Flights_Terminal");
 
-        if (!string.IsNullOrWhiteSpace(terminal))
-        {
-            q = q.Where(f =>
-                (f.Gate != null && f.Gate.Terminal == terminal) ||
-                (f.CheckInDesk != null && f.CheckInDesk.Terminal == terminal));
-        }
+                var airlineIdStored = HttpContext.Session.GetInt32("Flights_AirlineId");
+                if (airlineIdStored.HasValue)
+                    airlineId ??= airlineIdStored.Value;
 
-        if (flightStatus.HasValue) q = q.Where(f => f.Status == flightStatus.Value);
+                var gateIdStored = HttpContext.Session.GetInt32("Flights_GateId");
+                if (gateIdStored.HasValue)
+                    gateId ??= gateIdStored.Value;
 
-        if (delayedOnly == true)
-            q = q.Where(f => f.DelayMinutes > 0 || f.Status == FlightStatus.Delayed);
+                var flightStatusStr = HttpContext.Session.GetString("Flights_FlightStatus");
+                if (!string.IsNullOrEmpty(flightStatusStr) &&
+                    Enum.TryParse<FlightStatus>(flightStatusStr, out var fs))
+                {
+                    flightStatus ??= fs;
+                }
 
-        if (date.HasValue)
-        {
-            var d = date.Value.Date;
+                var dateStr = HttpContext.Session.GetString("Flights_Date");
+                if (!string.IsNullOrEmpty(dateStr) &&
+                    DateTime.TryParse(dateStr, out var dt))
+                {
+                    date ??= dt;
+                }
+
+                var delayedStr = HttpContext.Session.GetString("Flights_DelayedOnly");
+                if (!string.IsNullOrEmpty(delayedStr))
+                {
+                    delayedOnly ??= delayedStr == "true";
+                }
+            }
+
+            board = string.IsNullOrWhiteSpace(board) ? "departures" : board.ToLower();
+            status = string.IsNullOrWhiteSpace(status) ? "all" : status.ToLower();
+
+            HttpContext.Session.SetString("Flights_Search", search ?? string.Empty);
+            HttpContext.Session.SetString("Flights_Status", status);
+            HttpContext.Session.SetString("Flights_Board", board);
+            HttpContext.Session.SetString("Flights_Terminal", terminal ?? string.Empty);
+
+            if (airlineId.HasValue)
+                HttpContext.Session.SetInt32("Flights_AirlineId", airlineId.Value);
+            else
+                HttpContext.Session.Remove("Flights_AirlineId");
+
+            if (gateId.HasValue)
+                HttpContext.Session.SetInt32("Flights_GateId", gateId.Value);
+            else
+                HttpContext.Session.Remove("Flights_GateId");
+
+            if (flightStatus.HasValue)
+                HttpContext.Session.SetString("Flights_FlightStatus", flightStatus.Value.ToString());
+            else
+                HttpContext.Session.Remove("Flights_FlightStatus");
+
+            if (date.HasValue)
+                HttpContext.Session.SetString("Flights_Date", date.Value.ToString("yyyy-MM-dd"));
+            else
+                HttpContext.Session.Remove("Flights_Date");
+
+            HttpContext.Session.SetString("Flights_DelayedOnly", (delayedOnly == true) ? "true" : "false");
+
+            var q = _context.Flights
+                .Include(f => f.Airline)
+                .Include(f => f.Gate)
+                .Include(f => f.CheckInDesk)
+                .Include(f => f.CreatedByUser)
+                .AsQueryable();
+
+            if (status == "active") q = q.Where(f => f.IsActive);
+            else if (status == "inactive") q = q.Where(f => !f.IsActive);
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                q = q.Where(f =>
+                    f.FlightNumber.Contains(search) ||
+                    f.OriginAirport.Contains(search) ||
+                    f.DestinationAirport.Contains(search));
+            }
+
+            if (airlineId.HasValue) q = q.Where(f => f.AirlineId == airlineId.Value);
+            if (gateId.HasValue) q = q.Where(f => f.GateId == gateId.Value);
+
+            if (!string.IsNullOrWhiteSpace(terminal))
+            {
+                q = q.Where(f =>
+                    (f.Gate != null && f.Gate.Terminal == terminal) ||
+                    (f.CheckInDesk != null && f.CheckInDesk.Terminal == terminal));
+            }
+
+            if (flightStatus.HasValue) q = q.Where(f => f.Status == flightStatus.Value);
+
+            if (delayedOnly == true)
+                q = q.Where(f => f.DelayMinutes > 0 || f.Status == FlightStatus.Delayed);
+
+            if (date.HasValue)
+            {
+                var d = date.Value.Date;
+                q = board == "arrivals"
+                    ? q.Where(f => f.ArrivalTime.Date == d)
+                    : q.Where(f => f.DepartureTime.Date == d);
+            }
+
             q = board == "arrivals"
-                ? q.Where(f => f.ArrivalTime.Date == d)
-                : q.Where(f => f.DepartureTime.Date == d);
+                ? q.OrderBy(f => f.ArrivalTime)
+                : q.OrderBy(f => f.DepartureTime);
+
+            var flights = await q.ToListAsync();
+
+            ViewBag.Airlines = await _context.Airlines.Where(a => a.IsActive)
+                .OrderBy(a => a.Name)
+                .Select(a => new SelectListItem($"{a.Name} ({a.Code})", a.Id.ToString()))
+                .ToListAsync();
+
+            ViewBag.Gates = await _context.Gates.Where(g => g.IsActive)
+                .OrderBy(g => g.Terminal).ThenBy(g => g.Code)
+                .Select(g => new SelectListItem($"{g.Terminal} - {g.Code}", g.Id.ToString()))
+                .ToListAsync();
+
+            var vm = new FlightsIndexViewModel
+            {
+                Flights = flights,
+                SearchTerm = search,
+                StatusFilter = status,
+                Board = board,
+                AirlineId = airlineId,
+                GateId = gateId,
+                Terminal = terminal,
+                FlightStatus = flightStatus,
+                Date = date,
+                DelayedOnly = delayedOnly == true
+            };
+
+            return View(vm);
         }
 
-        q = board == "arrivals"
-            ? q.OrderBy(f => f.ArrivalTime)
-            : q.OrderBy(f => f.DepartureTime);
-
-        var flights = await q.ToListAsync();
-
-        // dropdowns for filters (ViewBag like we used in the view)
-        ViewBag.Airlines = await _context.Airlines.Where(a => a.IsActive)
-            .OrderBy(a => a.Name)
-            .Select(a => new SelectListItem($"{a.Name} ({a.Code})", a.Id.ToString()))
-            .ToListAsync();
-
-        ViewBag.Gates = await _context.Gates.Where(g => g.IsActive)
-            .OrderBy(g => g.Terminal).ThenBy(g => g.Code)
-            .Select(g => new SelectListItem($"{g.Terminal} - {g.Code}", g.Id.ToString()))
-            .ToListAsync();
-
-        var vm = new FlightsIndexViewModel
-        {
-            Flights = flights,
-            SearchTerm = search,
-            StatusFilter = status,
-            Board = board,
-            AirlineId = airlineId,
-            GateId = gateId,
-            Terminal = terminal,
-            FlightStatus = flightStatus,
-            Date = date,
-            DelayedOnly = delayedOnly == true
-        };
-
-        return View(vm);
-    }
-
-
-    // GET: /Admin/Flights/Details/5
-    public async Task<IActionResult> Details(int id)
+        // get details endpoint -> /Admin/Flights/Details/5
+        public async Task<IActionResult> Details(int id)
         {
             var flight = await _context.Flights
                 .Include(f => f.Airline)
@@ -133,7 +191,7 @@ public async Task<IActionResult> Index(
             return View(flight);
         }
 
-        // GET: /Admin/Flights/Create
+        // create endpoint for flights -> /Admin/Flights/Create
         public async Task<IActionResult> Create()
         {
             var vm = new FlightFormViewModel
@@ -147,7 +205,7 @@ public async Task<IActionResult> Index(
             return View(vm);
         }
 
-        // POST: /Admin/Flights/Create
+        // create endpoint -> /Admin/Flights/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(FlightFormViewModel vm)
@@ -194,7 +252,7 @@ public async Task<IActionResult> Index(
             return View(vm);
         }
 
-        // GET: /Admin/Flights/Edit/5
+        // udpate endpoint view -> /Admin/Flights/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
             var flight = await _context.Flights.FirstOrDefaultAsync(f => f.Id == id && f.IsActive);
@@ -221,7 +279,7 @@ public async Task<IActionResult> Index(
             return View(vm);
         }
 
-        // POST: /Admin/Flights/Edit/5
+        // update ndpoint -> /Admin/Flights/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, FlightFormViewModel vm)
@@ -265,7 +323,7 @@ public async Task<IActionResult> Index(
             return View(vm);
         }
 
-        // GET: /Admin/Flights/Delete/5
+        // delete endpoint -> /Admin/Flights/Delete/5
         public async Task<IActionResult> Delete(int id)
         {
             var flight = await _context.Flights
@@ -326,7 +384,6 @@ public async Task<IActionResult> Index(
             if (gateOverlap != null)
                 return $"Gate conflict: another flight already uses gate {gateOverlap.Gate?.Terminal}-{gateOverlap.Gate?.Code} during that time.";
 
-            // Check-in desk overlap (if selected)
             if (candidate.CheckInDeskId.HasValue)
             {
                 var deskOverlap = await _context.Flights

@@ -9,12 +9,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
-
+// database
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
+// identity .net
 builder.Services.AddDefaultIdentity<IdentityUser>(options =>
 {
     options.SignIn.RequireConfirmedAccount = false;
@@ -25,6 +26,7 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options =>
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
+// auth jwt
 builder.Services.AddAuthentication()
     .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
     {
@@ -41,22 +43,28 @@ builder.Services.AddAuthentication()
         };
     });
 
-// ---------- SESSION ----------
-builder.Services.AddSession();
+// sessions
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 
-// ---------- SEED ROLES + ADMIN ----------
+// seed roelt dhe admin
 builder.Services.AddTransient<SeedData>();
 
 var app = builder.Build();
 
-// ---------- APPLY MIGRATIONS + SEED DATA ----------
+// seed data dhe migrations
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    await db.Database.MigrateAsync();           // creates DB / updates schema
+    await db.Database.MigrateAsync();
 
     var seed = scope.ServiceProvider.GetRequiredService<SeedData>();
-    await seed.SeedAsync();                     // creates roles + default Admin
+    await seed.SeedAsync();
 }
 
 if (app.Environment.IsDevelopment())
@@ -74,21 +82,22 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+// session para endpoints dhe MVC
+app.UseSession();
+
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseSession();
-
-// Areas (Admin dashboard)
+// areas (Admin part)
 app.MapControllerRoute(
     name: "areas",
     pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 
-// Default MVC
+// default mvc
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-app.MapRazorPages(); // Identity Razor Pages (Login, Register, etc.)
+app.MapRazorPages(); // Identity Razor Pages
 
 app.Run();

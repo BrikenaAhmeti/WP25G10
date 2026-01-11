@@ -24,19 +24,52 @@ namespace WP25G10.Areas.Admin.Controllers
             _roleManager = roleManager;
         }
 
-        // Helper: active = not locked or lockout in the past
         private static bool IsUserActive(IdentityUser user)
         {
             return !user.LockoutEnd.HasValue || user.LockoutEnd <= DateTimeOffset.UtcNow;
         }
 
         public async Task<IActionResult> Index(
-         string? search = null,
-         string StatusFilter = "all",
-         int page = 1,
-         int pageSize = 10)
+            string? search = null,
+            string StatusFilter = "all",
+            int page = 1,
+            int pageSize = 10,
+            bool reset = false)
         {
             var status = string.IsNullOrWhiteSpace(StatusFilter) ? "all" : StatusFilter;
+
+            if (reset)
+            {
+                HttpContext.Session.Remove("Staff_Search");
+                HttpContext.Session.Remove("Staff_Status");
+                HttpContext.Session.Remove("Staff_Page");
+
+                search = null;
+                status = "all";
+                page = 1;
+            }
+            else
+            {
+                var hasQuery =
+                Request.Query.ContainsKey("search") ||
+                Request.Query.ContainsKey("StatusFilter") ||
+                Request.Query.ContainsKey("page");
+
+                if (!hasQuery)
+                {
+                    search ??= HttpContext.Session.GetString("Staff_Search");
+                    status = HttpContext.Session.GetString("Staff_Status") ?? status;
+
+                    var storedPage = HttpContext.Session.GetInt32("Staff_Page");
+                    if (storedPage.HasValue && storedPage.Value > 0)
+                    {
+                        page = storedPage.Value;
+                    }
+                }
+            }
+            HttpContext.Session.SetString("Staff_Search", search ?? string.Empty);
+            HttpContext.Session.SetString("Staff_Status", status ?? "all");
+            HttpContext.Session.SetInt32("Staff_Page", page);
 
             var staffUsers = await _userManager.GetUsersInRoleAsync("Staff");
             var query = staffUsers.AsQueryable();
@@ -94,13 +127,13 @@ namespace WP25G10.Areas.Admin.Controllers
             return View(vm);
         }
 
-        // GET: Admin/Staff/Create
+        // get create view endpoint - Admin/Staff/Create
         public IActionResult Create()
         {
             return View(new StaffCreateViewModel());
         }
 
-        // POST: Admin/Staff/Create
+        // post endpoint for create - Admin/Staff/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(StaffCreateViewModel model)
@@ -110,7 +143,6 @@ namespace WP25G10.Areas.Admin.Controllers
                 return View(model);
             }
 
-            // Ensure Staff role exists
             if (!await _roleManager.RoleExistsAsync("Staff"))
             {
                 await _roleManager.CreateAsync(new IdentityRole("Staff"));
@@ -146,7 +178,7 @@ namespace WP25G10.Areas.Admin.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: Admin/Staff/Edit/5
+        // get edit view endpoint -> Admin/Staff/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
             if (string.IsNullOrEmpty(id)) return NotFound();
@@ -155,7 +187,7 @@ namespace WP25G10.Areas.Admin.Controllers
             if (user == null) return NotFound();
 
             var isStaff = await _userManager.IsInRoleAsync(user, "Staff");
-            if (!isStaff) return NotFound(); // don't edit non-staff here
+            if (!isStaff) return NotFound(); 
 
             var vm = new StaffEditViewModel
             {
@@ -168,7 +200,7 @@ namespace WP25G10.Areas.Admin.Controllers
             return View(vm);
         }
 
-        // POST: Admin/Staff/Edit/5
+        // edit endpoint -> Admin/Staff/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, StaffEditViewModel model)
@@ -189,7 +221,6 @@ namespace WP25G10.Areas.Admin.Controllers
             user.Email = model.Email;
             user.UserName = model.UserName;
 
-            // Active/Inactive via Lockout
             if (model.IsActive)
             {
                 user.LockoutEnd = null;
@@ -214,7 +245,7 @@ namespace WP25G10.Areas.Admin.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // POST: Admin/Staff/ToggleActive
+        // post acitve endopint -> Admin/Staff/ToggleActive
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ToggleActive(string id)
@@ -243,7 +274,7 @@ namespace WP25G10.Areas.Admin.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // POST: Admin/Staff/Delete/5
+        // delete endpoint -> Admin/Staff/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(string id)

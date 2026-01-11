@@ -26,13 +26,57 @@ namespace WP25G10.Areas.Admin.Controllers
 
         // get index page view - /Admin/Gates
         public async Task<IActionResult> Index(
-            string? search,
-            string status = "all",
-            string gateState = "all",
-            string sort = "created_desc",
-            int page = 1,
-            int pageSize = 10)
+         string? search,
+         string status = "all",
+         string gateState = "all",
+         string sort = "created_desc",
+         int page = 1,
+         int pageSize = 10,
+         bool reset = false)
         {
+            if (reset)
+            {
+                HttpContext.Session.Remove("Gates_Search");
+                HttpContext.Session.Remove("Gates_Status");
+                HttpContext.Session.Remove("Gates_GateState");
+                HttpContext.Session.Remove("Gates_Sort");
+                HttpContext.Session.Remove("Gates_Page");
+
+                search = null;
+                status = "all";
+                gateState = "all";
+                sort = "created_desc";
+                page = 1;
+            }
+            else
+            {
+                var hasQuery =
+                    Request.Query.ContainsKey("search") ||
+                    Request.Query.ContainsKey("status") ||
+                    Request.Query.ContainsKey("gateState") ||
+                    Request.Query.ContainsKey("sort") ||
+                    Request.Query.ContainsKey("page");
+
+                if (!hasQuery)
+                {
+                    search ??= HttpContext.Session.GetString("Gates_Search");
+                    status = HttpContext.Session.GetString("Gates_Status") ?? status;
+                    gateState = HttpContext.Session.GetString("Gates_GateState") ?? gateState;
+                    sort = HttpContext.Session.GetString("Gates_Sort") ?? sort;
+
+                    var storedPage = HttpContext.Session.GetInt32("Gates_Page");
+                    if (storedPage.HasValue && storedPage.Value > 0)
+                    {
+                        page = storedPage.Value;
+                    }
+                }
+            }
+            HttpContext.Session.SetString("Gates_Search", search ?? string.Empty);
+            HttpContext.Session.SetString("Gates_Status", status ?? "all");
+            HttpContext.Session.SetString("Gates_GateState", gateState ?? "all");
+            HttpContext.Session.SetString("Gates_Sort", sort ?? "created_desc");
+            HttpContext.Session.SetInt32("Gates_Page", page);
+
             var query = _context.Gates.AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(search))
