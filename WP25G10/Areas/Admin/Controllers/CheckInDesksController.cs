@@ -24,12 +24,13 @@ namespace WP25G10.Areas.Admin.Controllers
             _userManager = userManager;
         }
 
-        // GET: Admin/CheckInDesks
+        // get main view endpoint - Admin/CheckInDesks
         public async Task<IActionResult> Index(
-            string? search,
-            string status = "all",
-            int page = 1,
-            int pageSize = 10)
+           string? search,
+           string status = "all",
+           string sort = "created_desc",
+           int page = 1,
+           int pageSize = 10)
         {
             var query = _context.CheckInDesks.AsQueryable();
 
@@ -53,14 +54,40 @@ namespace WP25G10.Areas.Admin.Controllers
 
             var totalCount = await query.CountAsync();
 
+            switch (sort)
+            {
+                case "terminal_asc":
+                    query = query.OrderBy(d => d.Terminal)
+                                 .ThenBy(d => d.DeskNumber);
+                    break;
+
+                case "terminal_desc":
+                    query = query.OrderByDescending(d => d.Terminal)
+                                 .ThenByDescending(d => d.DeskNumber);
+                    break;
+
+                case "desk_asc":
+                    query = query.OrderBy(d => d.DeskNumber)
+                                 .ThenBy(d => d.Terminal);
+                    break;
+
+                case "desk_desc":
+                    query = query.OrderByDescending(d => d.DeskNumber)
+                                 .ThenByDescending(d => d.Terminal);
+                    break;
+
+                default:
+                    sort = "created_desc";
+                    query = query.OrderByDescending(d => d.Id);
+                    break;
+            }
+
             if (page < 1) page = 1;
             var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
             if (totalPages == 0) totalPages = 1;
             if (page > totalPages) page = totalPages;
 
             var desks = await query
-                .OrderBy(d => d.Terminal)
-                .ThenBy(d => d.DeskNumber)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
@@ -70,6 +97,7 @@ namespace WP25G10.Areas.Admin.Controllers
                 Desks = desks,
                 SearchTerm = search,
                 StatusFilter = status,
+                SortOrder = sort,
                 PageNumber = page,
                 TotalPages = totalPages
             };
@@ -77,28 +105,44 @@ namespace WP25G10.Areas.Admin.Controllers
             return View(vm);
         }
 
-        // GET: Admin/CheckInDesks/Create
+        // get endpoint details - Admin/CheckInDesks/Details/5
+        public async Task<IActionResult> Details(int id)
+        {
+            var desk = await _context.CheckInDesks
+                .Include(d => d.CreatedByUser)
+                .Include(d => d.Flights)
+                .FirstOrDefaultAsync(d => d.Id == id);
+
+            if (desk == null)
+            {
+                return NotFound();
+            }
+
+            return View(desk);
+        }
+
+        // create view
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Admin/CheckInDesks/Create
+        // post create form
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CheckInDesk desk)
         {
-            // Normalize terminal
+            // terminal format
             desk.Terminal = (desk.Terminal ?? string.Empty).Trim().ToUpperInvariant();
 
-            // ✅ Seto CreatedByUserId para validimit (se është [Required] dhe s’vjen nga forma)
+            // CreatedByUserId para validimit (se është [Required] dhe s’vjen nga forma)
             desk.CreatedByUserId = _userManager.GetUserId(User)!;
 
-            // ✅ Hiqe nga ModelState sepse e plotësojmë në server
+            // largo nga ModelState sepse e plotësojmë në server
             ModelState.Remove(nameof(CheckInDesk.CreatedByUserId));
             ModelState.Remove(nameof(CheckInDesk.CreatedByUser));
 
-            // Uniqueness: Terminal + DeskNumber
+            // Terminal dhe deskNumber duhet te jene unike
             var exists = await _context.CheckInDesks
                 .AnyAsync(d => d.Terminal == desk.Terminal &&
                                d.DeskNumber == desk.DeskNumber);
@@ -123,7 +167,7 @@ namespace WP25G10.Areas.Admin.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: Admin/CheckInDesks/Edit/5
+        // get edit view - Admin/CheckInDesks/Edit/2
         public async Task<IActionResult> Edit(int id)
         {
             var desk = await _context.CheckInDesks.FindAsync(id);
@@ -132,7 +176,7 @@ namespace WP25G10.Areas.Admin.Controllers
             return View(desk);
         }
 
-        // POST: Admin/CheckInDesks/Edit/5
+        // post edit endpoint - Admin/CheckInDesks/Edit/2
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, CheckInDesk desk)
