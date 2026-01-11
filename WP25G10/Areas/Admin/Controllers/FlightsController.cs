@@ -35,7 +35,18 @@ namespace WP25G10.Areas.Admin.Controllers
         DateTime? date,
         bool? delayedOnly)
         {
-            var hasQuery = Request.QueryString.HasValue;
+            var hasQuery =
+                Request.QueryString.HasValue ||
+                !string.IsNullOrWhiteSpace(search) ||
+                !string.IsNullOrWhiteSpace(status) ||
+                !string.IsNullOrWhiteSpace(board) ||
+                airlineId.HasValue ||
+                gateId.HasValue ||
+                !string.IsNullOrWhiteSpace(terminal) ||
+                flightStatus.HasValue ||
+                date.HasValue ||
+                delayedOnly.HasValue;
+
 
             if (!hasQuery)
             {
@@ -115,10 +126,12 @@ namespace WP25G10.Areas.Admin.Controllers
 
             if (!string.IsNullOrWhiteSpace(search))
             {
+                var s = search.Trim().ToLower();
+
                 q = q.Where(f =>
-                    f.FlightNumber.Contains(search) ||
-                    f.OriginAirport.Contains(search) ||
-                    f.DestinationAirport.Contains(search));
+                    f.FlightNumber != null && f.FlightNumber.ToLower() == s ||
+                    (f.OriginAirport != null && f.OriginAirport.ToLower().Contains(s)) ||
+                    (f.DestinationAirport != null && f.DestinationAirport.ToLower().Contains(s)));
             }
 
             if (airlineId.HasValue) q = q.Where(f => f.AirlineId == airlineId.Value);

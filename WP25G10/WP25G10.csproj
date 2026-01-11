@@ -20,6 +20,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="WP25G10.Tests\**\*.cs" />
+    <EmbeddedResource Remove="WP25G10.Tests\**\*" />
+    <None Remove="WP25G10.Tests\**\*" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="app.db" CopyToOutputDirectory="PreserveNewest" ExcludeFromSingleFile="true" />
   </ItemGroup>
 
