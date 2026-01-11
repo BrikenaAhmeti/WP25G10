@@ -1,8 +1,8 @@
 ﻿@page
-@model LoginModel
+@model RegisterModel
 @{
     Layout = "/Views/Shared/_AuthLayout.cshtml";
-    ViewData["Title"] = "Sign in";
+    ViewData["Title"] = "Register";
 }
 
 <h2 class="h4 mb-2">Sign in</h2>
@@ -30,12 +30,6 @@
         </div>
         <input asp-for="Input.Password" class="form-control" autocomplete="current-password" />
         <span asp-validation-for="Input.Password" class="text-danger"></span>
-    </div>
-
-    <!-- Remember me -->
-    <div class="form-check mb-3">
-        <input class="form-check-input" asp-for="Input.RememberMe" />
-        <label class="form-check-label" asp-for="Input.RememberMe"></label>
     </div>
 
     <!-- Submit -->
