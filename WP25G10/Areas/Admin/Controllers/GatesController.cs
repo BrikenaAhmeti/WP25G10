@@ -1,9 +1,13 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WP25G10.Data;
 using WP25G10.Models;
+using WP25G10.Models.ViewModels;
 
 namespace WP25G10.Areas.Admin.Controllers
 {
@@ -20,21 +24,117 @@ namespace WP25G10.Areas.Admin.Controllers
             _userManager = userManager;
         }
 
-        // GET: /Admin/Gates
-        public async Task<IActionResult> Index()
+        // get index page view - /Admin/Gates
+        public async Task<IActionResult> Index(
+            string? search,
+            string status = "all",
+            string gateState = "all",
+            string sort = "created_desc",
+            int page = 1,
+            int pageSize = 10)
         {
-            var gates = await _context.Gates
-                .OrderBy(g => g.Terminal)
-                .ThenBy(g => g.Code)
+            var query = _context.Gates.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                var s = search.Trim().ToLower();
+                query = query.Where(g =>
+                    g.Terminal.ToLower().Contains(s) ||
+                    g.Code.ToLower().Contains(s));
+            }
+
+            switch (status)
+            {
+                case "active":
+                    query = query.Where(g => g.IsActive);
+                    break;
+                case "inactive":
+                    query = query.Where(g => !g.IsActive);
+                    break;
+            }
+
+            switch (gateState)
+            {
+                case "open":
+                    query = query.Where(g => g.Status == GateStatus.Open);
+                    break;
+                case "closed":
+                    query = query.Where(g => g.Status == GateStatus.Closed);
+                    break;
+            }
+
+            var totalCount = await query.CountAsync();
+
+            switch (sort)
+            {
+                case "terminal_asc":
+                    query = query.OrderBy(g => g.Terminal)
+                                 .ThenBy(g => g.Code);
+                    break;
+
+                case "terminal_desc":
+                    query = query.OrderByDescending(g => g.Terminal)
+                                 .ThenByDescending(g => g.Code);
+                    break;
+
+                case "code_asc":
+                    query = query.OrderBy(g => g.Code)
+                                 .ThenBy(g => g.Terminal);
+                    break;
+
+                case "code_desc":
+                    query = query.OrderByDescending(g => g.Code)
+                                 .ThenByDescending(g => g.Terminal);
+                    break;
+
+                default:
+                    sort = "created_desc";
+                    query = query.OrderByDescending(g => g.Id);
+                    break;
+            }
+
+            if (page < 1) page = 1;
+            var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+            if (totalPages == 0) totalPages = 1;
+            if (page > totalPages) page = totalPages;
+
+            var gates = await query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync();
 
-            return View(gates);
+            var vm = new GatesIndexViewModel
+            {
+                Gates = gates,
+                SearchTerm = search,
+                StatusFilter = status,
+                GateStatusFilter = gateState,
+                SortOrder = sort,
+                PageNumber = page,
+                TotalPages = totalPages
+            };
+
+            return View(vm);
         }
 
-        // GET: /Admin/Gates/Create
+        // get details view - /Admin/Gates/Details/5
+        public async Task<IActionResult> Details(int id)
+        {
+            var gate = await _context.Gates
+                .Include(g => g.CreatedByUser)
+                .Include(g => g.Flights)
+                    .ThenInclude(f => f.Airline)
+                .FirstOrDefaultAsync(g => g.Id == id);
+
+            if (gate == null) return NotFound();
+
+            return View(gate);
+        }
+
+        // get create view - /Admin/Gates/Create
         public IActionResult Create() => View();
 
-        // POST: /Admin/Gates/Create
+        // post endpoint for create: /Admin/Gates/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Gate gate)
@@ -42,13 +142,12 @@ namespace WP25G10.Areas.Admin.Controllers
             if (!ModelState.IsValid) return View(gate);
 
             gate.CreatedByUserId = _userManager.GetUserId(User)!;
-
             _context.Gates.Add(gate);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: /Admin/Gates/Edit/5
+        // get edit view ednpoint - /Admin/Gates/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
             var gate = await _context.Gates.FindAsync(id);
@@ -57,7 +156,7 @@ namespace WP25G10.Areas.Admin.Controllers
             return View(gate);
         }
 
-        // POST: /Admin/Gates/Edit/5
+        // post edit endpiont - /Admin/Gates/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Gate gate)
@@ -66,8 +165,9 @@ namespace WP25G10.Areas.Admin.Controllers
 
             if (!ModelState.IsValid) return View(gate);
 
-            // Merr ekzistuesen (për me ruajt CreatedByUserId)
-            var existing = await _context.Gates.AsNoTracking().FirstOrDefaultAsync(g => g.Id == id);
+            var existing = await _context.Gates
+                .AsNoTracking()
+                .FirstOrDefaultAsync(g => g.Id == id);
             if (existing == null) return NotFound();
 
             gate.CreatedByUserId = existing.CreatedByUserId;
@@ -77,16 +177,7 @@ namespace WP25G10.Areas.Admin.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: /Admin/Gates/Delete/5
-        public async Task<IActionResult> Delete(int id)
-        {
-            var gate = await _context.Gates.FirstOrDefaultAsync(g => g.Id == id);
-            if (gate == null) return NotFound();
-
-            return View(gate);
-        }
-
-        // POST: /Admin/Gates/Delete/5
+        // delete endpoint - /Admin/Gates/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
