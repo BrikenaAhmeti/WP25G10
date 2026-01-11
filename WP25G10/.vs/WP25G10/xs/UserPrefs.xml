@@ -1,3 +1,39 @@
 ﻿<Properties StartupConfiguration="{9954F375-4E75-48DF-8EA0-50594BB52CF4}|Default">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Data/ApplicationDbContext.cs">
+    <Files>
+      <File FileName="Program.cs" Line="63" Column="5" />
+      <File FileName="Areas/Admin/Views/Index.cshtml" Line="3" Column="52" />
+      <File FileName="Areas/Admin/Views/EmptyClass.cs" Line="4" Column="1" />
+      <File FileName="Models/EmptyClass.cs" Line="15" Column="57" />
+      <File FileName="Data/ApplicationDbContext.cs" Line="21" Column="6" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="WP25G10">
+            <Node name="WP25G10">
+              <Node name="Areas" expanded="True">
+                <Node name="Admin" expanded="True">
+                  <Node name="Controllers" selected="True" />
+                </Node>
+                <Node name="Identity" expanded="True">
+                  <Node name="Pages" expanded="True" />
+                </Node>
+              </Node>
+              <Node name="Controllers" expanded="True" />
+              <Node name="Models" expanded="True" />
+              <Node name="wwwroot" expanded="True" />
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
   <MultiItemStartupConfigurations />
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.ItemProperties.WP25G10 PreferredExecutionTarget="/Applications/Google Chrome.app" />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
 </Properties>

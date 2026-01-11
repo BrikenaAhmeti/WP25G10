@@ -14,7 +14,7 @@
     </a>
 </div>
 
-<form asp-action="Edit" method="post">
+<form asp-action="Edit" method="post" enctype="multipart/form-data">
     <input type="hidden" asp-for="Id" />
 
     <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
@@ -37,10 +37,31 @@
         <span asp-validation-for="Country" class="text-danger"></span>
     </div>
 
+    @if (!string.IsNullOrEmpty(Model.LogoUrl))
+    {
+        <div class="mb-3">
+            <label class="form-label">Current logo</label>
+            <div>
+                <img src="@Model.LogoUrl" alt="@Model.Name" style="height:48px;" />
+            </div>
+        </div>
+    }
+
+    <div class="mb-3">
+        <label class="form-label">New logo (upload)</label>
+        <input type="file" name="logoFile" class="form-control" accept="image/*" />
+        <div class="form-text">
+            Leave empty to keep the current logo. If you upload a new file,
+            it will replace the existing logo (and override the URL below).
+        </div>
+    </div>
+
     <div class="mb-3">
         <label asp-for="LogoUrl" class="form-label"></label>
         <input asp-for="LogoUrl" class="form-control" />
-        <span class="form-text">Paste an image URL for the airline logo.</span>
+        <span class="form-text">
+            Optional: direct image URL. If you upload a new file this will be updated automatically.
+        </span>
         <span asp-validation-for="LogoUrl" class="text-danger"></span>
     </div>
 

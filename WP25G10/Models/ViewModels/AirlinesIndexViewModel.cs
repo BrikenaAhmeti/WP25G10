@@ -9,6 +9,8 @@ namespace WP25G10.Models.ViewModels
         public string? SearchTerm { get; set; }
         public string StatusFilter { get; set; } = "all";
 
+        public string SortOrder { get; set; } = "created_desc";
+
         public int PageNumber { get; set; }
         public int TotalPages { get; set; }
 

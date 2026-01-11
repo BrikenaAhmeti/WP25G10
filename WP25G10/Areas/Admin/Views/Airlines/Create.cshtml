@@ -6,7 +6,7 @@
 
 <h1 class="h3 mb-3">Create Airline</h1>
 
-<form asp-action="Create" method="post">
+<form asp-action="Create" method="post" enctype="multipart/form-data">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
     @if (ViewBag.Errors != null)
@@ -15,6 +15,7 @@
             @ViewBag.Errors
         </div>
     }
+
     <div class="mb-3">
         <label asp-for="Name" class="form-label"></label>
         <input asp-for="Name" class="form-control" />
@@ -33,10 +34,21 @@
         <span asp-validation-for="Country" class="text-danger"></span>
     </div>
 
+    @* upload actions *@
+    <div class="mb-3">
+        <label class="form-label">Logo (upload)</label>
+        <input type="file" name="logoFile" class="form-control" accept="image/*" />
+        <div class="form-text">
+            You can upload a logo image, or paste an external URL below.
+            If both are provided, the uploaded file will be used.
+        </div>
+    </div>
+
+
     <div class="mb-3">
         <label asp-for="LogoUrl" class="form-label"></label>
         <input asp-for="LogoUrl" class="form-control" />
-        <span class="form-text">Paste an image URL for the airline logo.</span>
+        <span class="form-text">Paste an image URL for the airline logo (optional).</span>
         <span asp-validation-for="LogoUrl" class="text-danger"></span>
     </div>
 
