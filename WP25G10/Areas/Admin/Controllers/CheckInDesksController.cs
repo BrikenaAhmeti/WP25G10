@@ -75,10 +75,10 @@ namespace WP25G10.Areas.Admin.Controllers
 
             if (!string.IsNullOrWhiteSpace(search))
             {
-                var s = search.Trim();
+                var s = search.Trim().ToLower();
                 query = query.Where(d =>
-                    d.Terminal.Contains(s) ||
-                    d.DeskNumber.ToString().Contains(s));
+                    d.Terminal.ToLower().Contains(s) ||
+                    d.DeskNumber.ToString().Contains(search.Trim()));
             }
 
             switch (status)
