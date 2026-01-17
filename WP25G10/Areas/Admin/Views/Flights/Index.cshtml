@@ -6,9 +6,18 @@
     ViewData["Title"] = "Flights";
     var airlines = ViewBag.Airlines as List<SelectListItem> ?? new();
     var gates = ViewBag.Gates as List<SelectListItem> ?? new();
+
+    var currentSearch = Model.SearchTerm;
+    var currentStatus = Model.StatusFilter;
+    var currentAirlineId = Model.AirlineId;
+    var currentGateId = Model.GateId;
+    var currentTerminal = Model.Terminal;
+    var currentDate = Model.Date?.ToString("yyyy-MM-dd");
+    var currentFlightStatus = Model.FlightStatus?.ToString();
+    var currentDelayedOnly = Model.DelayedOnly ? "true" : null;
 }
 
-<div class="d-flex justify-content-between align-items-center mb-3">
+<div class="d-flex justify-content-between align-items-center mb-2">
     <div>
         <h1 class="h4 mb-0">Flights</h1>
         <div class="text-muted small">Manage flights on the airport flight board.</div>
@@ -19,7 +28,53 @@
     </a>
 </div>
 
+<div class="btn-group mb-3" role="group">
+    <a class="btn btn-sm @(Model.Board == "departures" ? "btn-primary" : "btn-outline-primary")"
+       asp-action="Index"
+       asp-route-board="departures"
+       asp-route-search="@currentSearch"
+       asp-route-status="@currentStatus"
+       asp-route-airlineId="@currentAirlineId"
+       asp-route-gateId="@currentGateId"
+       asp-route-terminal="@currentTerminal"
+       asp-route-date="@currentDate"
+       asp-route-flightStatus="@currentFlightStatus"
+       asp-route-delayedOnly="@currentDelayedOnly">
+        Departures
+    </a>
+
+    <a class="btn btn-sm @(Model.Board == "arrivals" ? "btn-primary" : "btn-outline-primary")"
+       asp-action="Index"
+       asp-route-board="arrivals"
+       asp-route-search="@currentSearch"
+       asp-route-status="@currentStatus"
+       asp-route-airlineId="@currentAirlineId"
+       asp-route-gateId="@currentGateId"
+       asp-route-terminal="@currentTerminal"
+       asp-route-date="@currentDate"
+       asp-route-flightStatus="@currentFlightStatus"
+       asp-route-delayedOnly="@currentDelayedOnly">
+        Arrivals
+    </a>
+
+    <a class="btn btn-sm @(Model.Board == "all" ? "btn-primary" : "btn-outline-primary")"
+       asp-action="Index"
+       asp-route-board="all"
+       asp-route-search="@currentSearch"
+       asp-route-status="@currentStatus"
+       asp-route-airlineId="@currentAirlineId"
+       asp-route-gateId="@currentGateId"
+       asp-route-terminal="@currentTerminal"
+       asp-route-date="@currentDate"
+       asp-route-flightStatus="@currentFlightStatus"
+       asp-route-delayedOnly="@currentDelayedOnly">
+        All
+    </a>
+</div>
+
 <form method="get" class="row g-2 mb-3">
+    <input type="hidden" name="board" value="@Model.Board" />
+
     <div class="col-md-3">
         <div class="input-group">
             <span class="input-group-text"><i class="bi bi-search"></i></span>
@@ -32,26 +87,11 @@
     </div>
 
     <div class="col-md-2">
-        <select name="board" class="form-select">
-            @if (Model.Board == "arrivals")
-            {
-                <option value="departures">Departures</option>
-                <option value="arrivals" selected>Arrivals</option>
-            }
-            else
-            {
-                <option value="departures" selected>Departures</option>
-                <option value="arrivals">Arrivals</option>
-            }
-        </select>
-    </div>
-
-    <div class="col-md-2">
         <select name="airlineId" class="form-select">
             <option value="">All airlines</option>
             @foreach (var a in airlines)
             {
-                <option value="@a.Value" selected="@(Model.AirlineId?.ToString() == a.Value)">@a.Text</option>
+                <option value="@a.Value" selected="@(Model.AirlineId?.ToString() == a.Value ? "selected" : null)">@a.Text</option>
             }
         </select>
     </div>
@@ -61,7 +101,7 @@
             <option value="">All gates</option>
             @foreach (var g in gates)
             {
-                <option value="@g.Value" selected="@(Model.GateId?.ToString() == g.Value)">@g.Text</option>
+                <option value="@g.Value" selected="@(Model.GateId?.ToString() == g.Value ? "selected" : null)">@g.Text</option>
             }
         </select>
     </div>
@@ -75,8 +115,10 @@
     </div>
 
     <div class="col-md-2">
-        <input type="date" name="date" class="form-control"
-               value="@(Model.Date.HasValue? Model.Date.Value.ToString("yyyy-MM-dd") : "")" />
+        <input type="date"
+               name="date"
+               class="form-control"
+               value="@(Model.Date.HasValue ? Model.Date.Value.ToString("yyyy-MM-dd") : "")" />
     </div>
 
     <div class="col-md-2">
@@ -84,37 +126,21 @@
             <option value="">All status</option>
             @foreach (var s in Enum.GetValues(typeof(FlightStatus)).Cast<FlightStatus>())
             {
-                <option value="@s" selected="@(Model.FlightStatus?.ToString() == s.ToString())">@s</option>
+                <option value="@s" selected="@(Model.FlightStatus?.ToString() == s.ToString() ? "selected" : null)">@s</option>
             }
         </select>
     </div>
 
     <div class="col-md-2">
         <select name="status" class="form-select">
-            @if (Model.StatusFilter == "active")
-            {
-                <option value="all">All statuses</option>
-                <option value="active" selected>Active only</option>
-                <option value="inactive">Inactive only</option>
-            }
-            else if (Model.StatusFilter == "inactive")
-            {
-                <option value="all">All statuses</option>
-                <option value="active">Active only</option>
-                <option value="inactive" selected>Inactive only</option>
-            }
-            else
-            {
-                <option value="all" selected>All statuses</option>
-                <option value="active">Active only</option>
-                <option value="inactive">Inactive only</option>
-            }
+            <option value="all" selected="@(Model.StatusFilter == "all" ? "selected" : null)">All (active)</option>
+            <option value="inactive" selected="@(Model.StatusFilter == "inactive" ? "selected" : null)">Inactive only</option>
         </select>
     </div>
 
     <div class="col-md-2 d-flex align-items-center">
         <input class="form-check-input me-2" type="checkbox" name="delayedOnly" value="true"
-               checked="@(Model.DelayedOnly)" />
+               checked="@(Model.DelayedOnly ? "checked" : null)" />
         <label class="form-check-label">Delayed only</label>
     </div>
 
@@ -165,7 +191,10 @@ else
                             @if (f.DelayMinutes > 0)
                             {
                                 <div class="text-muted small">
-                                    Effective: @(Model.Board == "arrivals" ? f.EffectiveArrivalTime.ToString("g") : f.EffectiveDepartureTime.ToString("g"))
+                                    Effective:
+                                    @(Model.Board == "arrivals"
+                                        ? f.EffectiveArrivalTime.ToString("g")
+                                        : f.EffectiveDepartureTime.ToString("g"))
                                 </div>
                             }
                         </td>
@@ -229,25 +258,28 @@ else
 <div class="modal fade" id="deleteFlightModal" tabindex="-1" aria-labelledby="deleteFlightModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <form asp-action="Delete" method="post">
+            <form asp-area="Admin" asp-controller="Flights" asp-action="DeletePost" method="post">
+                @Html.AntiForgeryToken()
+
                 <div class="modal-header">
                     <h5 class="modal-title" id="deleteFlightModalLabel">Delete flight</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
+
                 <div class="modal-body">
                     <input type="hidden" name="id" id="delete-flight-id" />
+
                     <p>
                         Are you sure you want to delete
                         <strong id="delete-flight-name"></strong>?
                     </p>
                     <p class="mb-0 text-muted small">
-                        This will remove the flight from the system (soft delete).
+                        This will remove the flight from the board (soft delete).
                     </p>
                 </div>
+
                 <div class="modal-footer">
-                    <button type="button"
-                            class="btn btn-secondary"
-                            data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                         Cancel
                     </button>
                     <button type="submit" class="btn btn-danger">
@@ -262,16 +294,11 @@ else
 @section Scripts {
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            var deleteModal = document.getElementById('deleteFlightModal');
-            if (!deleteModal) return;
-
-            deleteModal.addEventListener('show.bs.modal', function (event) {
-                var button = event.relatedTarget;
-                var id = button.getAttribute('data-id');
-                var name = button.getAttribute('data-name');
-
-                deleteModal.querySelector('#delete-flight-id').value = id;
-                deleteModal.querySelector('#delete-flight-name').textContent = name;
+            document.querySelectorAll('button[data-bs-target="#deleteFlightModal"]').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    document.getElementById('delete-flight-id').value = this.dataset.id;
+                    document.getElementById('delete-flight-name').textContent = this.dataset.name;
+                });
             });
         });
     </script>

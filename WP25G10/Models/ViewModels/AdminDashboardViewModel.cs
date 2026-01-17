@@ -1,4 +1,7 @@
-﻿namespace WP25G10.Models.ViewModels
+﻿using System;
+using System.Collections.Generic;
+
+namespace WP25G10.Models.ViewModels
 {
     public class AdminDashboardViewModel
     {
@@ -13,6 +16,10 @@
 
         public int TotalFlights { get; set; }
         public int ActiveFlights { get; set; }
+
+        public int DeparturesToday { get; set; }
+        public int ArrivalsToday { get; set; }
+
         public int FlightsToday { get; set; }
 
         public List<FlightSummaryItem> LatestFlights { get; set; } = new();

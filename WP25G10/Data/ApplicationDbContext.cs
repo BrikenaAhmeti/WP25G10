@@ -16,6 +16,7 @@ public class ApplicationDbContext : IdentityDbContext
     public DbSet<CheckInDesk> CheckInDesks { get; set; } = default!;
     public DbSet<Flight> Flights { get; set; } = default!;
     public DbSet<ActionLog> ActionLogs { get; set; } = default!;
+    public DbSet<FlightFavorite> FlightFavorites { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

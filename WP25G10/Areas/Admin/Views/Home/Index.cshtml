@@ -7,7 +7,6 @@
 <h1 class="h3 mb-4">Dashboard</h1>
 
 <div class="row g-3 mb-4">
-    @* Airlines *@
     <div class="col-12 col-sm-6 col-lg-3">
         <div class="card shadow-sm border-0 h-100">
             <div class="card-body">
@@ -30,7 +29,6 @@
         </div>
     </div>
 
-    @* Gates *@
     <div class="col-12 col-sm-6 col-lg-3">
         <div class="card shadow-sm border-0 h-100">
             <div class="card-body">
@@ -53,7 +51,6 @@
         </div>
     </div>
 
-    @* Check-in Desks *@
     <div class="col-12 col-sm-6 col-lg-3">
         <div class="card shadow-sm border-0 h-100">
             <div class="card-body">
@@ -76,7 +73,6 @@
         </div>
     </div>
 
-    @* Flights *@
     <div class="col-12 col-sm-6 col-lg-3">
         <div class="card shadow-sm border-0 h-100">
             <div class="card-body">
@@ -85,9 +81,11 @@
                     <i class="bi bi-airplane-engines text-primary fs-4"></i>
                 </div>
                 <h3 class="mb-0">@Model.TotalFlights</h3>
+
                 <div class="small text-success mt-1">
-                    @Model.ActiveFlights active · @Model.FlightsToday today
+                    @Model.DeparturesToday departures today · @Model.ArrivalsToday arrivals today
                 </div>
+
                 <a asp-area="Admin" asp-controller="Flights" asp-action="Index"
                    class="small d-inline-block mt-2 text-decoration-none">
                     Manage flights →
@@ -97,7 +95,6 @@
     </div>
 </div>
 
-@* Latest flights table *@
 <div class="card shadow-sm border-0">
     <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
         <div>

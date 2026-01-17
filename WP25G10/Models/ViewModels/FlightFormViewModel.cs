@@ -12,6 +12,9 @@ namespace WP25G10.Models.ViewModels
         public string FlightNumber { get; set; } = string.Empty;
 
         [Required]
+        public FlightType Type { get; set; } = FlightType.Departure;
+
+        [Required]
         public int AirlineId { get; set; }
 
         [Required]
@@ -19,11 +22,8 @@ namespace WP25G10.Models.ViewModels
 
         public int? CheckInDeskId { get; set; }
 
-        [Required]
-        public string OriginAirport { get; set; } = string.Empty;
-
-        [Required]
-        public string DestinationAirport { get; set; } = string.Empty;
+        public string? OriginAirport { get; set; }
+        public string? DestinationAirport { get; set; }
 
         [Required]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-ddTHH:mm}", ApplyFormatInEditMode = true)]

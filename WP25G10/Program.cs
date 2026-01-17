@@ -9,25 +9,41 @@ var builder = WebApplication.CreateBuilder(args);
 
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
-// database
+// db
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-// identity .net
-builder.Services.AddDefaultIdentity<IdentityUser>(options =>
-{
-    options.SignIn.RequireConfirmedAccount = false;
-})
+// identity
+builder.Services
+    .AddDefaultIdentity<IdentityUser>(options =>
+    {
+        options.SignIn.RequireConfirmedAccount = false;
+    })
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
-// auth jwt
-builder.Services.AddAuthentication()
+// jwt per nextjs me localhost
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("NextJsClient", policy =>
+    {
+        policy.WithOrigins(
+                "http://localhost:3000",
+                "https://localhost:3000")
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
+});
+
+// jwt per api
+builder.Services
+    .AddAuthentication()
     .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
     {
         options.TokenValidationParameters = new TokenValidationParameters
@@ -43,7 +59,7 @@ builder.Services.AddAuthentication()
         };
     });
 
-// sessions
+// session
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
@@ -52,12 +68,12 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
-// seed roelt dhe admin
+// seed roles
 builder.Services.AddTransient<SeedData>();
 
 var app = builder.Build();
 
-// seed data dhe migrations
+// migrations and seed data
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
@@ -82,22 +98,26 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-// session para endpoints dhe MVC
+// cors per nextjs
+app.UseCors("NextJsClient");
+
 app.UseSession();
 
+// cookie auth me JWT auth per api
 app.UseAuthentication();
 app.UseAuthorization();
 
-// areas (Admin part)
+
+// admin area
 app.MapControllerRoute(
     name: "areas",
     pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 
-// default mvc
+// default
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-app.MapRazorPages(); // Identity Razor Pages
+app.MapRazorPages();
 
 app.Run();

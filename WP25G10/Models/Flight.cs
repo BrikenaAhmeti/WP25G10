@@ -12,6 +12,9 @@ namespace WP25G10.Models
         public string FlightNumber { get; set; } = string.Empty;
 
         [Required]
+        public FlightType Type { get; set; } = FlightType.Departure;
+
+        [Required]
         public int AirlineId { get; set; }
         public Airline? Airline { get; set; }
 

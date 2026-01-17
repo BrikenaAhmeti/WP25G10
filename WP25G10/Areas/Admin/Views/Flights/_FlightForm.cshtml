@@ -1,10 +1,14 @@
 ﻿@model WP25G10.Models.ViewModels.FlightFormViewModel
 @using WP25G10.Models
 
+@{
+    var homeAirport = (ViewBag.HomeAirport as string) ?? "Prishtina";
+}
+
 <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
 
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-3">
         <div class="mb-3">
             <label asp-for="FlightNumber" class="form-label"></label>
             <input asp-for="FlightNumber" class="form-control" />
@@ -12,7 +16,15 @@
         </div>
     </div>
 
-    <div class="col-md-4">
+    <div class="col-md-3">
+        <div class="mb-3">
+            <label asp-for="Type" class="form-label">Type</label>
+            <select asp-for="Type" class="form-select" asp-items="Html.GetEnumSelectList<FlightType>()"></select>
+            <span asp-validation-for="Type" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="col-md-3">
         <div class="mb-3">
             <label class="form-label">Airline</label>
             <select asp-for="AirlineId" asp-items="Model.Airlines" class="form-select"></select>
@@ -20,7 +32,7 @@
         </div>
     </div>
 
-    <div class="col-md-4">
+    <div class="col-md-3">
         <div class="mb-3">
             <label class="form-label">Gate</label>
             <select asp-for="GateId" asp-items="Model.Gates" class="form-select"></select>
@@ -41,17 +53,25 @@
 
     <div class="col-md-4">
         <div class="mb-3">
-            <label asp-for="OriginAirport" class="form-label"></label>
-            <input asp-for="OriginAirport" class="form-control" />
+            <label asp-for="OriginAirport" class="form-label">Origin</label>
+
+            <input asp-for="OriginAirport" class="form-control" id="OriginAirport" />
             <span asp-validation-for="OriginAirport" class="text-danger"></span>
+
+            <input class="form-control mt-0 d-none" id="OriginAirportFixed" value="@homeAirport" disabled />
+            <small class="text-muted d-none" id="OriginAirportFixedHint">Origin is fixed to “@homeAirport” for departures.</small>
         </div>
     </div>
 
     <div class="col-md-4">
         <div class="mb-3">
-            <label asp-for="DestinationAirport" class="form-label"></label>
-            <input asp-for="DestinationAirport" class="form-control" />
+            <label asp-for="DestinationAirport" class="form-label">Destination</label>
+
+            <input asp-for="DestinationAirport" class="form-control" id="DestinationAirport" />
             <span asp-validation-for="DestinationAirport" class="text-danger"></span>
+
+            <input class="form-control mt-0 d-none" id="DestinationAirportFixed" value="@homeAirport" disabled />
+            <small class="text-muted d-none" id="DestinationAirportFixedHint">Destination is fixed to “@homeAirport” for arrivals.</small>
         </div>
     </div>
 </div>
@@ -87,3 +107,60 @@
     <span class="form-text">If delayed, set minutes (e.g., 15, 30, 60).</span>
     <span asp-validation-for="DelayMinutes" class="text-danger"></span>
 </div>
+
+<script>
+(function () {
+    const home = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(homeAirport));
+
+    const typeSelect = document.getElementById("Type");
+
+    const originInput = document.getElementById("OriginAirport");
+    const destInput = document.getElementById("DestinationAirport");
+
+    const originFixed = document.getElementById("OriginAirportFixed");
+    const destFixed = document.getElementById("DestinationAirportFixed");
+
+    const originFixedHint = document.getElementById("OriginAirportFixedHint");
+    const destFixedHint = document.getElementById("DestinationAirportFixedHint");
+
+    function isArrivalType(v) {
+        if (!v) return false;
+        const s = ("" + v).toLowerCase();
+        return s === "arrival" || s === "1";
+    }
+
+    function sync() {
+        const v = typeSelect ? typeSelect.value : "Departure";
+        const isArrival = isArrivalType(v);
+
+        if (isArrival) {
+            // arrival: destinacioni Prishtina
+            if (destInput) destInput.value = home;
+
+            if (originInput) { originInput.disabled = false; originInput.classList.remove("d-none"); }
+            if (destInput) { destInput.disabled = true; destInput.classList.add("d-none"); }
+
+            if (originFixed) originFixed.classList.add("d-none");
+            if (originFixedHint) originFixedHint.classList.add("d-none");
+
+            if (destFixed) destFixed.classList.remove("d-none");
+            if (destFixedHint) destFixedHint.classList.remove("d-none");
+        } else {
+            // depature: origjina Prishtina
+            if (originInput) originInput.value = home;
+
+            if (destInput) { destInput.disabled = false; destInput.classList.remove("d-none"); }
+            if (originInput) { originInput.disabled = true; originInput.classList.add("d-none"); }
+
+            if (destFixed) destFixed.classList.add("d-none");
+            if (destFixedHint) destFixedHint.classList.add("d-none");
+
+            if (originFixed) originFixed.classList.remove("d-none");
+            if (originFixedHint) originFixedHint.classList.remove("d-none");
+        }
+    }
+
+    if (typeSelect) typeSelect.addEventListener("change", sync);
+    sync();
+})();
+</script>

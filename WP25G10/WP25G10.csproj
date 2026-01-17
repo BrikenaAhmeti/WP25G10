@@ -17,6 +17,7 @@
     <None Remove="Areas\Admin\Views\Gates\NewFolder\**" />
     <None Remove="Areas\Admin\Views\NewFolder1\**" />
     <Content Remove="Areas\Admin\Views\Gates\details.cshtml" />
+    <None Remove="Models\Dto\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -34,6 +35,10 @@
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="6.0.33" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.35" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.35" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.35">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.35" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.35" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.35">
@@ -47,6 +52,7 @@
 
   <ItemGroup>
     <Folder Include="Areas\Admin\Views\Home\" />
+    <Folder Include="Models\Dto\" />
   </ItemGroup>
 
 </Project>

@@ -23,7 +23,7 @@ namespace WP25G10.Areas.Admin.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var todayUtc = DateTime.UtcNow.Date;
+            var today = DateTime.Now.Date;
 
             var vm = new AdminDashboardViewModel
             {
@@ -36,14 +36,26 @@ namespace WP25G10.Areas.Admin.Controllers
                 TotalCheckInDesks = await _context.CheckInDesks.CountAsync(),
                 ActiveCheckInDesks = await _context.CheckInDesks.CountAsync(d => d.IsActive),
 
-                TotalFlights = await _context.Flights.CountAsync(),
+                TotalFlights = await _context.Flights.CountAsync(f => f.IsActive),
                 ActiveFlights = await _context.Flights.CountAsync(f => f.IsActive),
+
+                DeparturesToday = await _context.Flights.CountAsync(f =>
+                    f.IsActive &&
+                    f.Type == FlightType.Departure &&
+                    f.DepartureTime.Date == today),
+
+                ArrivalsToday = await _context.Flights.CountAsync(f =>
+                    f.IsActive &&
+                    f.Type == FlightType.Arrival &&
+                    f.ArrivalTime.Date == today),
+
                 FlightsToday = await _context.Flights.CountAsync(f =>
-                    f.DepartureTime.Date == todayUtc && f.IsActive)
+                    f.IsActive && (f.DepartureTime.Date == today || f.ArrivalTime.Date == today))
             };
 
             vm.LatestFlights = await _context.Flights
                 .Where(f => f.IsActive)
+                .Include(f => f.Airline)
                 .OrderBy(f => f.DepartureTime)
                 .Take(5)
                 .Select(f => new FlightSummaryItem

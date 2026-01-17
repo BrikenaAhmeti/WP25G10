@@ -7,6 +7,7 @@ namespace WP25G10.Models.ViewModels
         public List<Flight> Flights { get; set; } = new();
 
         public string? SearchTerm { get; set; }
+
         public string StatusFilter { get; set; } = "all";
 
         public string Board { get; set; } = "departures";
