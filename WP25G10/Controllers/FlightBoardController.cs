@@ -10,7 +10,7 @@ using WP25G10.Models;
 
 namespace WP25G10.Controllers
 {
-    [AllowAnonymous] // public – no login required
+    [AllowAnonymous]
     public class FlightBoardController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -20,7 +20,6 @@ namespace WP25G10.Controllers
             _context = context;
         }
 
-        // viewType: "departures" or "arrivals" (you can use it in the View as needed)
         public async Task<IActionResult> Index(
             string? viewType,
             string? airline,
@@ -29,7 +28,6 @@ namespace WP25G10.Controllers
             FlightStatus? status,
             DateTime? date)
         {
-            // base query: only active flights
             var query = _context.Flights
                 .Include(f => f.Airline)
                 .Include(f => f.Gate)
@@ -64,22 +62,18 @@ namespace WP25G10.Controllers
                 query = query.Where(f => f.DepartureTime.Date == d);
             }
 
-            // You can later use viewType to show departures/arrivals differently in the view
             ViewBag.ViewType = string.IsNullOrEmpty(viewType) ? "departures" : viewType.ToLower();
 
-            // Simple ordering by departure time
             var flights = await query
                 .OrderBy(f => f.DepartureTime)
                 .ToListAsync();
 
-            // decide view type first as a string
             var viewTypeValue = string.IsNullOrEmpty(viewType)
                 ? "departures"
                 : viewType.ToLower();
 
             ViewBag.ViewType = viewTypeValue;
 
-            // Optional: remember filters in Session (Requirement 12)
             HttpContext.Session.SetString("LastAirline", airline ?? string.Empty);
             HttpContext.Session.SetString("LastOrigin", origin ?? string.Empty);
             HttpContext.Session.SetString("LastDestination", destination ?? string.Empty);
