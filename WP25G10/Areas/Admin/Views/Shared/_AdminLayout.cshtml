@@ -10,10 +10,9 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <title>@ViewData["Title"] - Airport Manager System</title>
+    <title>@ViewData["Title"] · AeroPulse Airport</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="shortcut icon" href="~/favicon.ico" type="image/x-icon" />
-    <link rel="icon" href="~/favicon.ico" type="image/x-icon" />
+    <link rel="icon" type="image/x-icon" href="~/favicon.ico" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
@@ -25,11 +24,13 @@
         <nav id="adminSidebar" class="admin-sidebar d-flex flex-column bg-white">
             <div class="p-3 border-bottom d-flex align-items-center">
                 <div class="rounded-circle bg-light d-flex align-items-center justify-content-center me-2"
-                     style="width:36px;height:36px;">
-                    <i class="bi bi-airplane-fill text-primary"></i>
+                     style="width:36px;height:36px; overflow:hidden;">
+                    <img src="~/airport-logo.png"
+                         alt="AeroPulse Airport"
+                         style="width:24px;height:24px;object-fit:contain;" />
                 </div>
                 <div>
-                    <div class="fw-semibold">Airport System</div>
+                    <div class="fw-semibold">AeroPulse Airport System</div>
                     <div class="small text-muted">
                         @(User.IsInRole("Admin") ? "Admin Panel" : "Staff Panel")
                     </div>
@@ -131,7 +132,7 @@
             </main>
 
             <footer class="border-top py-2 text-center small text-muted bg-white">
-                &copy; @DateTime.Now.Year – Airport Manager System
+                &copy; @DateTime.Now.Year – AeroPulse Airport System
             </footer>
         </div>
     </div>
@@ -140,8 +141,7 @@
 
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
+    <script>document.addEventListener("DOMContentLoaded", function () {
             const sidebar = document.getElementById("adminSidebar");
             const toggle = document.getElementById("sidebarToggle");
             const backdrop = document.getElementById("sidebarBackdrop");
@@ -176,8 +176,7 @@
             window.addEventListener("resize", () => {
                 if (!isMobile()) closeSidebar();
             });
-        });
-    </script>
+        });</script>
 
     @RenderSection("Scripts", required: false)
 </body>
