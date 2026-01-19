@@ -1,4 +1,5 @@
 ﻿@model WP25G10.Models.ViewModels.StaffIndexViewModel
+@using WP25G10.Security
 
 @{
     ViewData["Title"] = "Staff management";
@@ -60,61 +61,68 @@ else
                     <th>User name</th>
                     <th>Email</th>
                     <th>Status</th>
-                    <th style="width: 260px;"></th>
+                    <th style="width: 320px;"></th>
                 </tr>
             </thead>
             <tbody>
-            @foreach (var user in Model.Staff)
-            {
-                <tr>
-                    <td>@user.UserName</td>
-                    <td>@user.Email</td>
-                    <td>
-                        @if (user.IsActive)
-                        {
-                            <span class="badge bg-success">Active</span>
-                        }
-                        else
-                        {
-                            <span class="badge bg-secondary">Inactive</span>
-                        }
-                    </td>
-                    <td class="text-end">
-                        <a asp-action="Edit" asp-route-id="@user.Id"
-                           class="btn btn-sm btn-outline-secondary me-1">
-                            <i class="bi bi-pencil"></i> Edit
-                        </a>
-
-                        <form asp-action="ToggleActive" method="post" class="d-inline">
-                            <input type="hidden" name="id" value="@user.Id" />
-                            <button type="submit"
-                                    class="btn btn-sm @(user.IsActive ? "btn-outline-warning" : "btn-outline-success")">
-                                @if (user.IsActive)
-                                {
-                                    <text><i class="bi bi-slash-circle"></i> Deactivate</text>
-                                }
-                                else
-                                {
-                                    <text><i class="bi bi-check-circle"></i> Activate</text>
-                                }
+                @foreach (var user in Model.Staff)
+                {
+                    <tr>
+                        <td>@user.UserName</td>
+                        <td>@user.Email</td>
+                        <td>
+                            @if (user.IsActive)
+                            {
+                                <span class="badge bg-success">Active</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">Inactive</span>
+                            }
+                        </td>
+                        <td class="text-end">
+                            <button type="button"
+                                    class="btn btn-sm btn-outline-primary me-1"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#staffDetailsModal"
+                                    data-id="@user.Id">
+                                <i class="bi bi-info-circle"></i> Details
                             </button>
-                        </form>
 
-                        <form asp-action="Delete" method="post" class="d-inline ms-1"
-                              onsubmit="return confirm('Are you sure you want to delete this staff account?');">
-                            <input type="hidden" name="id" value="@user.Id" />
-                            <button type="submit" class="btn btn-sm btn-outline-danger">
-                                <i class="bi bi-trash"></i> Delete
-                            </button>
-                        </form>
-                    </td>
-                </tr>
-            }
+                            <a asp-action="Edit" asp-route-id="@user.Id"
+                               class="btn btn-sm btn-outline-secondary me-1">
+                                <i class="bi bi-pencil"></i> Edit
+                            </a>
+
+                            <form asp-action="ToggleActive" method="post" class="d-inline">
+                                <input type="hidden" name="id" value="@user.Id" />
+                                <button type="submit"
+                                        class="btn btn-sm @(user.IsActive ? "btn-outline-warning" : "btn-outline-success")">
+                                    @if (user.IsActive)
+                                    {
+                                        <text><i class="bi bi-slash-circle"></i> Deactivate</text>
+                                    }
+                                    else
+                                    {
+                                        <text><i class="bi bi-check-circle"></i> Activate</text>
+                                    }
+                                </button>
+                            </form>
+
+                            <form asp-action="Delete" method="post" class="d-inline ms-1"
+                                  onsubmit="return confirm('Are you sure you want to delete this staff account?');">
+                                <input type="hidden" name="id" value="@user.Id" />
+                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                    <i class="bi bi-trash"></i> Delete
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                }
             </tbody>
         </table>
     </div>
 
-    @* Pagination *@
     if (Model.TotalPages > 1)
     {
         <nav aria-label="Staff pagination">
@@ -154,4 +162,140 @@ else
             </ul>
         </nav>
     }
+}
+
+<div class="modal fade" id="staffDetailsModal" tabindex="-1" aria-labelledby="staffDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staffDetailsModalLabel">Staff details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <div id="staff-details-loading" class="text-muted">
+                    Loading...
+                </div>
+
+                <div id="staff-details-content" class="d-none">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-2">
+                                <div class="text-muted small">User name</div>
+                                <div class="fw-semibold" id="sd-username"></div>
+                            </div>
+
+                            <div class="mb-2">
+                                <div class="text-muted small">Email</div>
+                                <div class="fw-semibold" id="sd-email"></div>
+                            </div>
+
+                            <div class="mb-2">
+                                <div class="text-muted small">Status</div>
+                                <div id="sd-status"></div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="text-muted small mb-2">Flight permissions</div>
+
+                            <ul class="list-group">
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    View flights
+                                    <span id="sd-view"></span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    Create flights
+                                    <span id="sd-create"></span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    Edit flights
+                                    <span id="sd-edit"></span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    Delete flights
+                                    <span id="sd-delete"></span>
+                                </li>
+                            </ul>
+
+                            <div class="text-muted small mt-2">
+                                Note: if permissions were changed recently, the user may need to re-login.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="staff-details-error" class="alert alert-danger d-none mb-0">
+                    Could not load staff details.
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        (function () {
+            const modalEl = document.getElementById('staffDetailsModal');
+            if (!modalEl) return;
+
+            const loadingEl = document.getElementById('staff-details-loading');
+            const contentEl = document.getElementById('staff-details-content');
+            const errorEl = document.getElementById('staff-details-error');
+
+            function badgeYes() {
+                return '<span class="badge bg-success">Yes</span>';
+            }
+            function badgeNo() {
+                return '<span class="badge bg-secondary">No</span>';
+            }
+
+            modalEl.addEventListener('show.bs.modal', async function (event) {
+                const btn = event.relatedTarget;
+                const id = btn?.getAttribute('data-id');
+
+                // reset UI
+                errorEl.classList.add('d-none');
+                contentEl.classList.add('d-none');
+                loadingEl.classList.remove('d-none');
+
+                if (!id) {
+                    loadingEl.classList.add('d-none');
+                    errorEl.classList.remove('d-none');
+                    return;
+                }
+
+                try {
+                    const url = '@Url.Action("DetailsJson", "Staff", new { area = "Admin" })' + '?id=' + encodeURIComponent(id);
+                    const res = await fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+
+                    if (!res.ok) throw new Error('Failed');
+
+                    const data = await res.json();
+
+                    document.getElementById('sd-username').textContent = data.userName || '';
+                    document.getElementById('sd-email').textContent = data.email || '';
+
+                    document.getElementById('sd-status').innerHTML = data.isActive
+                        ? '<span class="badge bg-success">Active</span>'
+                        : '<span class="badge bg-secondary">Inactive</span>';
+
+                    document.getElementById('sd-view').innerHTML = data.permissions?.canViewFlights ? badgeYes() : badgeNo();
+                    document.getElementById('sd-create').innerHTML = data.permissions?.canCreateFlights ? badgeYes() : badgeNo();
+                    document.getElementById('sd-edit').innerHTML = data.permissions?.canEditFlights ? badgeYes() : badgeNo();
+                    document.getElementById('sd-delete').innerHTML = data.permissions?.canDeleteFlights ? badgeYes() : badgeNo();
+
+                    loadingEl.classList.add('d-none');
+                    contentEl.classList.remove('d-none');
+                } catch (e) {
+                    loadingEl.classList.add('d-none');
+                    errorEl.classList.remove('d-none');
+                }
+            });
+        })();
+    </script>
 }

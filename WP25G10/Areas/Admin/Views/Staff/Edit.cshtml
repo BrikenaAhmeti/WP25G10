@@ -28,6 +28,29 @@
         <label asp-for="IsActive" class="form-check-label"></label>
     </div>
 
+    <hr class="my-4" />
+    <h6 class="mb-2">Flight permissions</h6>
+    <div class="text-muted small mb-2">
+        These permissions are stored as user claims. Changes may require the staff user to re-login.
+    </div>
+
+    <div class="form-check">
+        <input asp-for="CanViewFlights" class="form-check-input" />
+        <label asp-for="CanViewFlights" class="form-check-label"></label>
+    </div>
+    <div class="form-check">
+        <input asp-for="CanCreateFlights" class="form-check-input" />
+        <label asp-for="CanCreateFlights" class="form-check-label"></label>
+    </div>
+    <div class="form-check">
+        <input asp-for="CanEditFlights" class="form-check-input" />
+        <label asp-for="CanEditFlights" class="form-check-label"></label>
+    </div>
+    <div class="form-check mb-3">
+        <input asp-for="CanDeleteFlights" class="form-check-input" />
+        <label asp-for="CanDeleteFlights" class="form-check-label"></label>
+    </div>
+
     <button type="submit" class="btn btn-primary">Save changes</button>
     <a asp-action="Index" class="btn btn-secondary ms-2">Cancel</a>
 </form>

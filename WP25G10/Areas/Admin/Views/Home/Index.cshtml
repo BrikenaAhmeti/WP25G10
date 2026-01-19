@@ -1,7 +1,15 @@
 ﻿@model WP25G10.Models.ViewModels.AdminDashboardViewModel
+@using WP25G10.Security
+@using System.Security.Claims
 
 @{
     ViewData["Title"] = "Dashboard";
+
+    bool HasPerm(string perm) => User.HasClaim(Permissions.ClaimType, perm);
+
+    var canEditFlights = User.IsInRole("Admin") || HasPerm(Permissions.Flights.Edit);
+    var canViewFlights = User.IsInRole("Admin") || HasPerm(Permissions.Flights.View);
+    // If you want, later we can also add canCreateFlights / canDeleteFlights similarly.
 }
 
 <h1 class="h3 mb-4">Dashboard</h1>
@@ -86,10 +94,14 @@
                     @Model.DeparturesToday departures today · @Model.ArrivalsToday arrivals today
                 </div>
 
-                <a asp-area="Admin" asp-controller="Flights" asp-action="Index"
-                   class="small d-inline-block mt-2 text-decoration-none">
-                    Manage flights →
-                </a>
+                @* Show Manage flights to Staff only if they can view flights (or Admin always). *@
+                @if (canViewFlights)
+                {
+                    <a asp-area="Admin" asp-controller="Flights" asp-action="Index"
+                       class="small d-inline-block mt-2 text-decoration-none">
+                        Manage flights →
+                    </a>
+                }
             </div>
         </div>
     </div>
@@ -101,10 +113,14 @@
             <h2 class="h5 mb-0">Upcoming flights</h2>
             <div class="small text-muted">Next few active departures</div>
         </div>
-        <a asp-area="Admin" asp-controller="Flights" asp-action="Index"
-           class="btn btn-sm btn-outline-primary">
-            View all flights
-        </a>
+
+        @if (canViewFlights)
+        {
+            <a asp-area="Admin" asp-controller="Flights" asp-action="Index"
+               class="btn btn-sm btn-outline-primary">
+                View all flights
+            </a>
+        }
     </div>
     <div class="card-body p-0">
         @if (Model.LatestFlights.Any())
@@ -133,11 +149,22 @@
                                     <span class="badge bg-secondary">@f.Status</span>
                                 </td>
                                 <td class="text-end">
-                                    <a asp-area="Admin" asp-controller="Flights" asp-action="Edit"
-                                       asp-route-id="@f.Id"
-                                       class="btn btn-sm btn-outline-secondary">
-                                        Edit
-                                    </a>
+                                    @if (canEditFlights)
+                                    {
+                                        <a asp-area="Admin" asp-controller="Flights" asp-action="Edit"
+                                           asp-route-id="@f.Id"
+                                           class="btn btn-sm btn-outline-secondary">
+                                            Edit
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <a asp-area="Admin" asp-controller="Flights" asp-action="Details"
+                                           asp-route-id="@f.Id"
+                                           class="btn btn-sm btn-outline-secondary">
+                                            View
+                                        </a>
+                                    }
                                 </td>
                             </tr>
                         }

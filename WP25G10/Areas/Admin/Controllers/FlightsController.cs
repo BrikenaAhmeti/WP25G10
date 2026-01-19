@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using WP25G10.Data;
 using WP25G10.Models;
 using WP25G10.Models.ViewModels;
+using WP25G10.Security;
 
 namespace WP25G10.Areas.Admin.Controllers
 {
@@ -29,6 +30,19 @@ namespace WP25G10.Areas.Admin.Controllers
             _userManager = userManager;
         }
 
+        private bool IsAdmin() => User.IsInRole("Admin");
+
+        private bool HasPermission(string permission)
+        {
+            if (IsAdmin()) return true;
+            return User.HasClaim(Permissions.ClaimType, permission);
+        }
+
+        private IActionResult ForbidIfNo(string permission)
+        {
+            return HasPermission(permission) ? null! : Forbid();
+        }
+
         public async Task<IActionResult> Index(
             string? search,
             string? status,
@@ -42,6 +56,9 @@ namespace WP25G10.Areas.Admin.Controllers
             bool? reset
         )
         {
+            var forbid = ForbidIfNo(Permissions.Flights.View);
+            if (forbid != null) return forbid;
+
             if (reset == true)
             {
                 HttpContext.Session.Remove("Flights_Search");
@@ -103,7 +120,6 @@ namespace WP25G10.Areas.Admin.Controllers
 
             board = string.IsNullOrWhiteSpace(board) ? "departures" : board.Trim().ToLowerInvariant();
 
-            // status "all" now means "all ACTIVE flights" (default).
             status = string.IsNullOrWhiteSpace(status) ? "all" : status.Trim().ToLowerInvariant();
             if (status != "inactive") status = "all";
 
@@ -225,6 +241,9 @@ namespace WP25G10.Areas.Admin.Controllers
 
         public async Task<IActionResult> Details(int id)
         {
+            var forbid = ForbidIfNo(Permissions.Flights.View);
+            if (forbid != null) return forbid;
+
             var flight = await _context.Flights
                 .Include(f => f.Airline)
                 .Include(f => f.Gate)
@@ -238,13 +257,15 @@ namespace WP25G10.Areas.Admin.Controllers
 
         public async Task<IActionResult> Create()
         {
+            var forbid = ForbidIfNo(Permissions.Flights.Create);
+            if (forbid != null) return forbid;
+
             var vm = new FlightFormViewModel
             {
                 Type = FlightType.Departure,
                 DepartureTime = DateTime.Now.AddHours(2),
                 ArrivalTime = DateTime.Now.AddHours(4),
 
-                // so UI shows it immediately (even though we enforce server-side)
                 OriginAirport = HOME_AIRPORT_LABEL,
                 DestinationAirport = "",
 
@@ -261,6 +282,9 @@ namespace WP25G10.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(FlightFormViewModel vm)
         {
+            var forbid = ForbidIfNo(Permissions.Flights.Create);
+            if (forbid != null) return forbid;
+
             if (vm.ArrivalTime <= vm.DepartureTime)
                 ModelState.AddModelError("", "Arrival time must be after departure time.");
 
@@ -327,6 +351,9 @@ namespace WP25G10.Areas.Admin.Controllers
 
         public async Task<IActionResult> Edit(int id)
         {
+            var forbid = ForbidIfNo(Permissions.Flights.Edit);
+            if (forbid != null) return forbid;
+
             var flight = await _context.Flights.FirstOrDefaultAsync(f => f.Id == id && f.IsActive);
             if (flight == null) return NotFound();
 
@@ -339,7 +366,6 @@ namespace WP25G10.Areas.Admin.Controllers
                 GateId = flight.GateId,
                 CheckInDeskId = flight.CheckInDeskId,
 
-                // populate both so UI can show the fixed one too
                 OriginAirport = flight.OriginAirport,
                 DestinationAirport = flight.DestinationAirport,
 
@@ -361,6 +387,9 @@ namespace WP25G10.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, FlightFormViewModel vm)
         {
+            var forbid = ForbidIfNo(Permissions.Flights.Edit);
+            if (forbid != null) return forbid;
+
             if (vm.Id == null || id != vm.Id.Value) return BadRequest();
 
             if (vm.ArrivalTime <= vm.DepartureTime)
@@ -424,6 +453,9 @@ namespace WP25G10.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeletePost(int id)
         {
+            var forbid = ForbidIfNo(Permissions.Flights.Delete);
+            if (forbid != null) return forbid;
+
             var flight = await _context.Flights.FirstOrDefaultAsync(f => f.Id == id && f.IsActive);
             if (flight == null) return NotFound();
 

@@ -31,6 +31,18 @@ namespace WP25G10.Models.ViewModels
         [DataType(DataType.Password)]
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
         public string Password { get; set; } = string.Empty;
+
+        [Display(Name = "Can view flights")]
+        public bool CanViewFlights { get; set; } = true;
+
+        [Display(Name = "Can create flights")]
+        public bool CanCreateFlights { get; set; } = false;
+
+        [Display(Name = "Can edit flights")]
+        public bool CanEditFlights { get; set; } = false;
+
+        [Display(Name = "Can delete flights")]
+        public bool CanDeleteFlights { get; set; } = false;
     }
 
     public class StaffEditViewModel
@@ -49,6 +61,19 @@ namespace WP25G10.Models.ViewModels
 
         [Display(Name = "Active")]
         public bool IsActive { get; set; }
+
+        // ✅ Dynamic permissions (Claims)
+        [Display(Name = "Can view flights")]
+        public bool CanViewFlights { get; set; } = true;
+
+        [Display(Name = "Can create flights")]
+        public bool CanCreateFlights { get; set; } = false;
+
+        [Display(Name = "Can edit flights")]
+        public bool CanEditFlights { get; set; } = false;
+
+        [Display(Name = "Can delete flights")]
+        public bool CanDeleteFlights { get; set; } = false;
     }
 
     public class StaffIndexViewModel
