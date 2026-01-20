@@ -12,7 +12,9 @@ namespace WP25G10.Tests.Helpers
                 .UseInMemoryDatabase(Guid.NewGuid().ToString())
                 .Options;
 
-            return new ApplicationDbContext(options);
+            var context = new ApplicationDbContext(options);
+            context.Database.EnsureCreated();
+            return context;
         }
     }
 }
