@@ -100,24 +100,6 @@ else
                 <tr>
                     <th>
                         <a asp-action="Index"
-                           asp-route-sort="@(Model.SortOrder == "terminal_asc" ? "terminal_desc" : "terminal_asc")"
-                           asp-route-search="@Model.SearchTerm"
-                           asp-route-status="@Model.StatusFilter"
-                           asp-route-gateState="@Model.GateStatusFilter"
-                           asp-route-page="@Model.PageNumber"
-                           class="text-decoration-none text-dark">
-                            Terminal
-                            @if (!string.IsNullOrEmpty(Model.SortOrder) &&
-                                Model.SortOrder.StartsWith("terminal_"))
-                            {
-                                <i class="bi @(Model.SortOrder == "terminal_asc"
-                                                ? "bi-caret-up-fill"
-                                                : "bi-caret-down-fill") ms-1"></i>
-                            }
-                        </a>
-                    </th>
-                    <th>
-                        <a asp-action="Index"
                            asp-route-sort="@(Model.SortOrder == "code_asc" ? "code_desc" : "code_asc")"
                            asp-route-search="@Model.SearchTerm"
                            asp-route-status="@Model.StatusFilter"
@@ -126,9 +108,27 @@ else
                            class="text-decoration-none text-dark">
                             Gate code
                             @if (!string.IsNullOrEmpty(Model.SortOrder) &&
-                                Model.SortOrder.StartsWith("code_"))
+                               Model.SortOrder.StartsWith("code_"))
                             {
                                 <i class="bi @(Model.SortOrder == "code_asc"
+                                                ? "bi-caret-up-fill"
+                                                : "bi-caret-down-fill") ms-1"></i>
+                            }
+                        </a>
+                    </th>
+                    <th>
+                        <a asp-action="Index"
+                           asp-route-sort="@(Model.SortOrder == "terminal_asc" ? "terminal_desc" : "terminal_asc")"
+                           asp-route-search="@Model.SearchTerm"
+                           asp-route-status="@Model.StatusFilter"
+                           asp-route-gateState="@Model.GateStatusFilter"
+                           asp-route-page="@Model.PageNumber"
+                           class="text-decoration-none text-dark">
+                            Terminal
+                            @if (!string.IsNullOrEmpty(Model.SortOrder) &&
+                               Model.SortOrder.StartsWith("terminal_"))
+                            {
+                                <i class="bi @(Model.SortOrder == "terminal_asc"
                                                 ? "bi-caret-up-fill"
                                                 : "bi-caret-down-fill") ms-1"></i>
                             }
@@ -143,8 +143,8 @@ else
                 @foreach (var g in Model.Gates)
                 {
                     <tr>
-                        <td>@g.Terminal</td>
                         <td>@g.Code</td>
+                        <td>@g.Terminal</td>
                         <td>
                             @if (g.Status == WP25G10.Models.GateStatus.Open)
                             {
