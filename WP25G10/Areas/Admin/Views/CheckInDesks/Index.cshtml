@@ -13,8 +13,7 @@
         <i class="bi bi-plus-lg me-1"></i> Add desk
     </a>
 </div>
-
-@* filters *@
+s
 <form method="get" class="row g-2 mb-3">
     <div class="col-md-4">
         <div class="input-group">
@@ -52,7 +51,6 @@
         </select>
     </div>
 
-    @* keep current sort when applying filters *@
     <input type="hidden" name="sort" value="@Model.SortOrder" />
 
     <div class="col-md-3">
@@ -79,23 +77,6 @@ else
                 <tr>
                     <th>
                         <a asp-action="Index"
-                           asp-route-sort="@(Model.SortOrder == "terminal_asc" ? "terminal_desc" : "terminal_asc")"
-                           asp-route-search="@Model.SearchTerm"
-                           asp-route-status="@Model.StatusFilter"
-                           asp-route-page="@Model.PageNumber"
-                           class="text-decoration-none text-dark">
-                            Terminal
-                            @if (!string.IsNullOrEmpty(Model.SortOrder) &&
-                                 Model.SortOrder.StartsWith("terminal_"))
-                            {
-                                <i class="bi @(Model.SortOrder == "terminal_asc"
-                                                ? "bi-caret-up-fill"
-                                                : "bi-caret-down-fill") ms-1"></i>
-                            }
-                        </a>
-                    </th>
-                    <th>
-                        <a asp-action="Index"
                            asp-route-sort="@(Model.SortOrder == "desk_asc" ? "desk_desc" : "desk_asc")"
                            asp-route-search="@Model.SearchTerm"
                            asp-route-status="@Model.StatusFilter"
@@ -103,9 +84,26 @@ else
                            class="text-decoration-none text-dark">
                             Desk number
                             @if (!string.IsNullOrEmpty(Model.SortOrder) &&
-                                 Model.SortOrder.StartsWith("desk_"))
+                                Model.SortOrder.StartsWith("desk_"))
                             {
                                 <i class="bi @(Model.SortOrder == "desk_asc"
+                                                ? "bi-caret-up-fill"
+                                                : "bi-caret-down-fill") ms-1"></i>
+                            }
+                        </a>
+                    </th>
+                    <th>
+                        <a asp-action="Index"
+                           asp-route-sort="@(Model.SortOrder == "terminal_asc" ? "terminal_desc" : "terminal_asc")"
+                           asp-route-search="@Model.SearchTerm"
+                           asp-route-status="@Model.StatusFilter"
+                           asp-route-page="@Model.PageNumber"
+                           class="text-decoration-none text-dark">
+                            Terminal
+                            @if (!string.IsNullOrEmpty(Model.SortOrder) &&
+                                Model.SortOrder.StartsWith("terminal_"))
+                            {
+                                <i class="bi @(Model.SortOrder == "terminal_asc"
                                                 ? "bi-caret-up-fill"
                                                 : "bi-caret-down-fill") ms-1"></i>
                             }
@@ -119,8 +117,8 @@ else
                 @foreach (var d in Model.Desks)
                 {
                     <tr>
-                        <td>@d.Terminal</td>
                         <td>@d.DeskNumber</td>
+                        <td>@d.Terminal</td>
                         <td>
                             @if (d.IsActive)
                             {

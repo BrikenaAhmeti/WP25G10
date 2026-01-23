@@ -58,42 +58,6 @@
         </div>
     </div>
 
-    <div class="col-md-6">
-        <div class="card shadow-sm border-0">
-            <div class="card-body">
-                <h6 class="card-title mb-3">Usage overview</h6>
-
-                @{
-                    var totalFlights = Model.Flights?.Count ?? 0;
-                    var activeFlights = Model.Flights?.Count(f => f.IsActive) ?? 0;
-                    var upcomingFlights = Model.Flights?
-                        .Count(f => f.IsActive && f.DepartureTime > DateTime.UtcNow) ?? 0;
-                }
-
-                <div class="row text-center">
-                    <div class="col-4">
-                        <div class="small text-muted">Total flights</div>
-                        <div class="fw-semibold fs-5">@totalFlights</div>
-                    </div>
-                    <div class="col-4">
-                        <div class="small text-muted">Active</div>
-                        <div class="fw-semibold fs-5">@activeFlights</div>
-                    </div>
-                    <div class="col-4">
-                        <div class="small text-muted">Upcoming</div>
-                        <div class="fw-semibold fs-5">@upcomingFlights</div>
-                    </div>
-                </div>
-
-                @if (totalFlights == 0)
-                {
-                    <p class="text-muted small mt-3 mb-0">
-                        No flights are currently assigned to this desk.
-                    </p>
-                }
-            </div>
-        </div>
-    </div>
 </div>
 
 @if (Model.Flights != null && Model.Flights.Any())
@@ -113,8 +77,8 @@
             </thead>
             <tbody>
                 @foreach (var f in Model.Flights
-                   .OrderByDescending(x => x.DepartureTime)
-                   .Take(10))
+                  .OrderByDescending(x => x.DepartureTime)
+                  .Take(10))
                 {
                     <tr>
                         <td>@f.FlightNumber</td>
