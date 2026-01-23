@@ -16,7 +16,6 @@
     <EmbeddedResource Remove="Areas\Admin\Views\NewFolder1\**" />
     <None Remove="Areas\Admin\Views\Gates\NewFolder\**" />
     <None Remove="Areas\Admin\Views\NewFolder1\**" />
-    <Content Remove="Areas\Admin\Views\Gates\details.cshtml" />
     <None Remove="Models\Dto\" />
     <None Remove="Security\" />
   </ItemGroup>
