@@ -40,7 +40,11 @@
             <div class="px-3 py-2 border-bottom small">
                 @if (SignInManager.IsSignedIn(User))
                 {
-                    <div class="fw-semibold">@User.Identity!.Name</div>
+                    <a asp-area="Identity"
+                       asp-page="/Account/Manage/Index"
+                       class="fw-semibold text-decoration-none text-dark">
+                        @User.Identity!.Name
+                    </a>
                     <div class="mt-1">
                         @if (User.IsInRole("Admin"))
                         {
